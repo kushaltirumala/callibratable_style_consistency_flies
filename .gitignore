@@ -126,3 +126,6 @@ dmypy.json
 .pyre/
 
 transforming_data/fruitflydata/*
+transforming_data/compressed_final_data/*
+
+*.pyc
