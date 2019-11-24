@@ -4,6 +4,7 @@ from .bball import BBallDataset
 
 dataset_dict = {
     'bball' : BBallDataset
+    'fruit_fly' : FruitFlyDataset
 }
 
 
