@@ -1,9 +1,10 @@
 from .core import TrajectoryDataset, LabelFunction
 from .bball import BBallDataset
+from .fruit_fly import FruitFlyDataset
 
 
 dataset_dict = {
-    'bball' : BBallDataset
+    'bball' : BBallDataset,
     'fruit_fly' : FruitFlyDataset
 }
 

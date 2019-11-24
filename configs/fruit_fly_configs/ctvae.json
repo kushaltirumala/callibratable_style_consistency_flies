@@ -3,7 +3,7 @@
         "name": "fruit_fly",
         "player_types":  {
             "first_fly": true,
-            "second_fly": true,
+            "second_fly": true
         },
         "subsample": 2,
         "single_agent": true,
