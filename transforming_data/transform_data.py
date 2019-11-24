@@ -9,9 +9,15 @@ DIR = "fruitflydata/Courtship/"
 raw_tracking_data = []
 raw_label_data = []
 
+# Specify sequence length here
 SEQUENCE_LENGTH = 100
+
+# Specify sub action (from bouts array) within action here
 action = "copulation"
 
+
+def overlap_interval(a1, a2, b1, b2):
+	return (b2 >= a1 and b2 <= a2) or (b1 >= a1 and b1 <= a2) or (b1 >= a1 and b2 <= a2) or (b1 <= a1 and b2 >= a2)
 
 for x in os.walk(DIR):
 	folder_name = x[0]
@@ -23,26 +29,30 @@ for x in os.walk(DIR):
 		tracking_file = folder_name + "/" + movie_name + "_track.mat"
 		interval_file = folder_name + "/" + movie_name + "_actions.mat"
 		print("TRACKING FILE " + tracking_file)
+
+		# Now, that we've found a file i.e a movie to focus on
 		if os.path.exists(tracking_file):
 			temp = sio.loadmat(tracking_file)
 			interval_file_data = sio.loadmat(interval_file)
 			behs = interval_file_data["behs"][0]
 			bouts = interval_file_data["bouts"]
+
+			# Find the index of the specified sub action within behs array
 			for index in range(len(behs)):
 				if behs[index][0] == action:
 					index_of_action = index
 
+			# Find the arrays of intervals where the flies have committed said action
 			fly_1_bouts = bouts[0][index_of_action]
 			fly_2_bouts = bouts[1][index_of_action]
 
-			fly_1_bouts = np.sort(fly_1_bouts, axis=0)
-			fly_2_bouts = np.sort(fly_2_bouts, axis=0)
 			fly_1_bouts_index = 0
 			fly_2_bouts_index = 0
 
 			index_of_action = None
 
-
+			number_of_true_actions_fly_1 = 0
+			number_of_true_actions_fly_2 = 0
 
 
 			data = temp["trk"][0]
@@ -59,32 +69,31 @@ for x in os.walk(DIR):
 			flies_switched = flag_frames[0]
 			switched = False
 
+			# Loop through sequences at SEQUENCE_LENGTH step
 			for j in range(0, positions_only.shape[1], SEQUENCE_LENGTH): 
-				# assume flags_switched[j] == 1 means that from this frame on (inclusive) flies have switched
 				label_fly_1 = False
 				label_fly_2 = False
-				if fly_1_bouts_index < len(fly_1_bouts) and j >= fly_1_bouts[fly_1_bouts_index][0]:
-					label_fly_1 = True
-					fly_1_bouts_index += 1
 
-				if fly_2_bouts_index < len(fly_2_bouts) and j >= fly_2_bouts[fly_2_bouts_index][0]:
-					label_fly_2 = True
-					fly_2_bouts_index += 1
+				# check if fly_1 should be labeled as copulation
+				for fly_1_t in range(len(fly_1_bouts)):
+					if overlap_interval(j, j + SEQUENCE_LENGTH, fly_1_bouts[fly_1_t][0], fly_1_bouts[fly_1_t][1]):
+						label_fly_1 = True
+						break
+	
+				# check if fly_2 should be labeled as copulation
+				for fly_2_t in range(len(fly_2_bouts)):
+					if overlap_interval(j, j + SEQUENCE_LENGTH, fly_2_bouts[fly_2_t][0], fly_2_bouts[fly_2_t][1]):
+						label_fly_2 = True
+						break
 
-				# if (flies_switched[j] == 1):
-				# 	switched = not switched
-
-				# if (switched):
+				# save the corresponding x,y positions
 				x_1 = positions_only[0, j: j + SEQUENCE_LENGTH, 0] 
 				y_1 = positions_only[0, j: j + SEQUENCE_LENGTH, 1] 
 				x_2 = positions_only[1, j: j + SEQUENCE_LENGTH, 0] 
 				y_2 = positions_only[1, j: j + SEQUENCE_LENGTH, 1] 
-				# else:
-					# x_2 = positions_only[0][j: j + SEQUENCE_LENGTH][0] 
-					# y_2 = positions_only[0][j: j + SEQUENCE_LENGTH][1] 
-					# x_1 = positions_only[1][j: j + SEQUENCE_LENGTH][0] 
-					# y_1 = positions_only[1][j: j + SEQUENCE_LENGTH][1] 	
 
+
+				# add the data to our running matrices 
 				add_arr = np.array([x_1, y_1, x_2, y_2]) 
 				add_arr = np.transpose(add_arr)
 				add_arr_length = add_arr.shape[0]
@@ -92,7 +101,6 @@ for x in os.walk(DIR):
 					last_row = add_arr[add_arr_length - 1]
 					add_arr = np.vstack((add_arr, last_row))
 
-				# print(add_arr.shape)
 				final.append(add_arr) 
 				final_action_labels.append([label_fly_1, label_fly_2])
 
@@ -104,14 +112,7 @@ for x in os.walk(DIR):
 				raw_tracking_data = np.vstack((raw_tracking_data, final))
 				raw_label_data = np.vstack((raw_label_data, final_action_labels))
 
-			# raw_tracking_data.append(final)
-			# print(raw_tracking_data.shape)
-			# print(raw_label_data.shape)
-
-# final_data = [raw_tracking_data, raw_label_data]
-# print(raw_tracking_data)
-# print(raw_label_data)
 
 
-np.savez("compressed_final_data/courtship_raw_tracking_data",data=raw_tracking_data)
-np.savez("compressed_final_data/courtship_raw_label_data",data=raw_label_data)
+np.savez("compressed_final_data/copulation_raw_tracking_data",data=raw_tracking_data)
+np.savez("compressed_final_data/copulation_raw_label_data",data=raw_label_data)
