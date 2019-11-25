@@ -23,13 +23,15 @@ COORDS = {
 }
 
 # TODO let users define where data lies
-# ROOT_DIR = 'transforming_data/compressed_final_data/'
-# TRAIN_FILE = 'copulation_segmented_train.npz'
-# TEST_FILE = 'copulation_segmented_test.npz'
-
-ROOT_DIR = '/cs/courses/cs101a/segmented_fruit_fly_data/'
+ROOT_DIR = 'transforming_data/compressed_final_data/'
 TRAIN_FILE = 'copulation_segmented_train.npz'
 TEST_FILE = 'copulation_segmented_test.npz'
+TRAIN_LABELS = 'copulation_segmented_train_label.npz'
+TEST_LABELS = 'copulation_segmented_test_label.npz'
+
+# ROOT_DIR = '/cs/courses/cs101a/segmented_fruit_fly_data/'
+# TRAIN_FILE = 'copulation_segmented_train.npz'
+# TEST_FILE = 'copulation_segmented_test.npz'
 
 
 class FruitFlyDataset(TrajectoryDataset):
@@ -66,22 +68,33 @@ class FruitFlyDataset(TrajectoryDataset):
             for lf_config in self.config['labels']:
                 lf_config['data_normalized'] = self.normalize_data
 
-        self.train_states, self.train_actions = self._load_and_preprocess(train=True)
-        self.test_states, self.test_actions = self._load_and_preprocess(train=False)
+
+        self.train_states, self.train_actions, self.train_labels = self._load_and_preprocess(train=True)
+        self.test_states, self.test_actions, self.test_labels = self._load_and_preprocess(train=False)
+        self.hasTrueLabels = True
+
 
     def _load_and_preprocess(self, train):
         path = os.path.join(ROOT_DIR, TRAIN_FILE if train else TEST_FILE)
+        labels_path = os.path.join(ROOT_DIR, TRAIN_LABELS if train else TEST_LABELS)
+
         file = np.load(path)
+        labels_file = np.load(labels_path)
+
         data = file['data']
+        labels = labels_file['data']
 
         # Subsample timesteps
         data = data[:,::self.subsample]
+
 
         # Filter based on player types
         inds_filter = []
         for key, val in self.player_types.items():
             inds_filter += COORDS[key] if val else []
         data = data[:,:,inds_filter]
+
+
 
         # Normalize data
         if self.normalize_data:
@@ -94,6 +107,12 @@ class FruitFlyDataset(TrajectoryDataset):
             data = np.reshape(data, (seq_len, -1, 2))
             data = np.swapaxes(data, 0, 1)
 
+            
+            labels = np.reshape(labels, (-1, 1))
+
+            # also fix the corresponding labels
+
+
         # Convert to states and actions
         states = data
         actions = states[:,1:] - states[:,:-1]
@@ -103,7 +122,13 @@ class FruitFlyDataset(TrajectoryDataset):
         self._state_dim = states.shape[-1]
         self._action_dim = actions.shape[-1]
 
-        return torch.Tensor(states), torch.Tensor(actions)
+
+        if train:
+            self.train_data = data
+        else:
+            self.test_data = data
+
+        return torch.Tensor(states), torch.Tensor(actions), torch.Tensor(labels)
 
     def save(self, states, actions=[], save_path='', save_name='', burn_in=0, labels=None, lf_list=[], single_plot=False):
         if not os.path.exists(save_path):

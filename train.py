@@ -33,6 +33,10 @@ def run_epoch(data_loader, model, device, env, train=True, early_break=False):
             if model.requires_environment:
                 batch_log = model(states, actions, labels_dict, env)
             else:
+                print("hi")
+                print(labels_dict)
+                print(states.shape)
+                print(actions.shape)
                 batch_log = model(states, actions, labels_dict)
         else:
             if model.requires_environment:

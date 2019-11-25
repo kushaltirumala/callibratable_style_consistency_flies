@@ -61,10 +61,10 @@ class TrajectoryDataset(Dataset):
         # Assertions for ground-truth labels
         if self.hasTrueLabels:
             assert isinstance(self.train_labels, torch.Tensor)
-            assert self.train_labels.size(0) == self.train_data.size(0)
+            assert self.train_labels.shape[0] == self.train_data.shape[0]
             assert isinstance(self.test_labels, torch.Tensor)
-            assert self.test_labels.size(0) == self.test_data.size(0)
-        
+            assert self.test_labels.shape[0] == self.test_data.shape[0]
+    
         # Apply labeling functions
         self._init_label_functions()
         self.train_lf_labels = self.label_data(self.train_states, self.train_actions, self.train_labels)
@@ -103,7 +103,25 @@ class TrajectoryDataset(Dataset):
     def __getitem__(self, index):
         states = self.states[self.mode][index,:,:self.state_dim]
         actions = self.actions[self.mode][index,:,:self.action_dim]
+        # if not self.hasTrueLabels:
         labels_dict = { key: val[index] for key, val in self.lf_labels[self.mode].items() }
+        print("HEHEHEHEH")
+        print(labels_dict)
+        print("HEHEHEHHE")
+        # else:
+        #     if self.mode == TRAIN:
+        #         temp = self.train_labels[index].item()
+        #         categorical_labels = [0, 0, 0]
+        #         if (temp == 1):
+        #             categorical_labels[0] = 1
+        #         else:
+        #             categorical_labels[1] = 1
+        #         labels_dict = {"copulation": torch.Tensor(categorical_labels)}
+        #     else:
+        #         temp = self.test_labels[index]
+        #         categorical_labels = [0, 0]
+        #         categorical_labels[temp] += 1
+        #         labels_dict = {"copulation": torch.Tensor(categorical_labels)}
         return states, actions, labels_dict
 
     @property
