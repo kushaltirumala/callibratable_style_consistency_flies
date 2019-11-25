@@ -1,9 +1,11 @@
 from .core import BaseEnvironment, generate_rollout
 from .bball import BBallEnv
+from .fruit_fly import FruitFlyEnv
 
 
 environment_dict = {
-    'bball' : BBallEnv()
+    'bball' : BBallEnv(),
+    'fruit_fly': FruitFlyEnv()
 }
 
 
