@@ -23,6 +23,18 @@ class AverageSpeed(LabelFunction):
         return ax
 
 
+class GroundTruth(LabelFunction):
+    name = 'ground_truth'
+
+    def __init__(self, lf_config):
+        super().__init__(lf_config, output_dim=1)
+
+    def label_func(self, states, actions, true_label=None):
+        return true_label
+
+    def plot(self, ax, states, label, width, length):
+        return ax
+
 class Destination(LabelFunction):
 
     name = 'destination'

@@ -80,6 +80,7 @@ class CTVAE(BaseSequentialModel):
 
         # Encode
         posterior = self.encode(states[:-1], actions=actions, labels=labels)
+        # print(posterior)
 
         kld = Normal.kl_divergence(posterior, free_bits=0.0).detach()
         self.log.metrics['kl_div_true'] = torch.sum(kld)
@@ -89,6 +90,7 @@ class CTVAE(BaseSequentialModel):
 
         # Decode
         self.reset_policy(labels=labels, z=posterior.sample())
+
 
         for t in range(actions.size(0)):
             action_likelihood = self.decode_action(states[t])

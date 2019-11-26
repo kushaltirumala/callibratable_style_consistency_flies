@@ -75,12 +75,33 @@ class BaseSequentialModel(nn.Module):
     # TODO this should be in TVAEmodel
     def encode(self, states, actions=None, labels=None):
         enc_birnn_input = states
+        # print("----states-----")
+        # print(enc_birnn_input)
+        # print("---------------")
         if actions is not None:
             assert states.size(0) == actions.size(0)
             enc_birnn_input = torch.cat([states, actions], dim=-1)
+
+
+        # print("---OG INPUT------")
+        # print(enc_birnn_input)
+        # print("-----------------")
         
         hiddens, _ = self.enc_birnn(enc_birnn_input)
+        # print("-----hiddens------")
+        # print(hiddens)
+        # print("-------------------")
+
+        # import numpy as np
+        # if np.sum(np.isnan(hiddens.detach().numpy())):
+        #     for name, param in self.enc_birnn.named_parameters():
+        #         print(name)
+        #         print(np.sum(np.isnan(param.detach().numpy())))
+        #     import pdb; pdb.set_trace()
+
+        # print("-------avg_hiddens-----")
         avg_hiddens = torch.mean(hiddens, dim=0)
+        # print("-----------------------")
 
         enc_fc_input = avg_hiddens
         if labels is not None:
@@ -90,10 +111,18 @@ class BaseSequentialModel(nn.Module):
             enc_fc_input = torch.cat([avg_hiddens, labels], 1)
             # print(enc_fc_input.shape)
             # print(self.enc_fc)
-
+        # print("-----input-----")
+        # print(enc_fc_input)
+        # print("---------------")
         enc_h = self.enc_fc(enc_fc_input) if hasattr(self, 'enc_fc') else enc_fc_input
+        # print("------output------")
+        # print(enc_h)
+        # print("------------------")
         enc_mean = self.enc_mean(enc_h)
         enc_logvar = self.enc_logvar(enc_h)
+
+        # print(enc_mean)
+        # print(enc_logvar)
 
         return Normal(enc_mean, enc_logvar)
 
@@ -165,6 +194,7 @@ class BaseSequentialModel(nn.Module):
         assert isinstance(losses, dict)
         self.optimizer.zero_grad()
         total_loss = sum(losses.values())
+        # nn.utils.clip_grad_norm_(self.parameters(), 0.5)
         total_loss.backward()
         self.clip_grad()
         self.optimizer.step()
