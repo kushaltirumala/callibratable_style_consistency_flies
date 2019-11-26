@@ -23,15 +23,13 @@ COORDS = {
 }
 
 # TODO let users define where data lies
-ROOT_DIR = 'transforming_data/compressed_final_data/'
+# ROOT_DIR = 'transforming_data/compressed_final_data/'
+ROOT_DIR = '/cs/courses/cs101a/segmented_fruit_fly_data/'
 TRAIN_FILE = 'copulation_segmented_train.npz'
 TEST_FILE = 'copulation_segmented_test.npz'
 TRAIN_LABELS = 'copulation_segmented_train_label.npz'
 TEST_LABELS = 'copulation_segmented_test_label.npz'
 
-# ROOT_DIR = '/cs/courses/cs101a/segmented_fruit_fly_data/'
-# TRAIN_FILE = 'copulation_segmented_train.npz'
-# TEST_FILE = 'copulation_segmented_test.npz'
 
 
 class FruitFlyDataset(TrajectoryDataset):
