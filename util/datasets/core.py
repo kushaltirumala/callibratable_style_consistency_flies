@@ -104,24 +104,27 @@ class TrajectoryDataset(Dataset):
         states = self.states[self.mode][index,:,:self.state_dim]
         actions = self.actions[self.mode][index,:,:self.action_dim]
         # if not self.hasTrueLabels:
-        labels_dict = { key: val[index] for key, val in self.lf_labels[self.mode].items() }
-        print("HEHEHEHEH")
-        print(labels_dict)
-        print("HEHEHEHHE")
+        # labels_dict = { key: val[index] for key, val in self.lf_labels[self.mode].items() }
+        # print("HEHEHEHEH")
+        # print(labels_dict)
+        # print("HEHEHEHHE")
         # else:
-        #     if self.mode == TRAIN:
-        #         temp = self.train_labels[index].item()
-        #         categorical_labels = [0, 0, 0]
-        #         if (temp == 1):
-        #             categorical_labels[0] = 1
-        #         else:
-        #             categorical_labels[1] = 1
-        #         labels_dict = {"copulation": torch.Tensor(categorical_labels)}
-        #     else:
-        #         temp = self.test_labels[index]
-        #         categorical_labels = [0, 0]
-        #         categorical_labels[temp] += 1
-        #         labels_dict = {"copulation": torch.Tensor(categorical_labels)}
+        if self.mode == TRAIN:
+            temp = self.train_labels[index].item()
+            categorical_labels = [0, 0]
+            if (temp == 1):
+                categorical_labels[0] = 1
+            else:
+                categorical_labels[1] = 1
+            labels_dict = {"copulation": torch.Tensor(categorical_labels)}
+        else:
+            temp = self.test_labels[index].item()
+            categorical_labels = [0, 0]
+            if (temp == 1):
+                categorical_labels[0] = 1
+            else:
+                categorical_labels[1] = 1
+            labels_dict = {"copulation": torch.Tensor(categorical_labels)}
         return states, actions, labels_dict
 
     @property
@@ -159,6 +162,8 @@ class TrajectoryDataset(Dataset):
 
     def _init_label_functions(self):
         self.label_dim = 0
+        if (self.hasTrueLabels):
+            self.label_dim = self.config["label_dim"]
         self.active_label_functions = []
         self.summary['label_functions'] = {}
         LabelFunction.Counter = 0 # reset counter for labeling functions
@@ -168,6 +173,7 @@ class TrajectoryDataset(Dataset):
             self.label_dim += lf.output_dim
             self.active_label_functions.append(lf)
             self.summary['label_functions'][lf.name] = lf.summary
+
 
     def label_data(self, states, actions, true_labels=None):
         """Labels a batch of data."""

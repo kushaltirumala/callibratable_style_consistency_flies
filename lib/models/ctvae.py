@@ -22,7 +22,10 @@ class CTVAE(BaseSequentialModel):
         enc_rnn_dim = self.config['rnn_dim']
         dec_rnn_dim = self.config['rnn_dim'] if self.is_recurrent else 0
         num_layers = self.config['num_layers']
+        # print("number of layers is" + str(num_layers))
+        # print(self.config)
         label_dim = self.config['label_dim']
+        # print("number of label dim " + str(label_dim))
 
         self.enc_birnn = nn.GRU(state_dim+action_dim, enc_rnn_dim, num_layers=num_layers, bidirectional=True)
 

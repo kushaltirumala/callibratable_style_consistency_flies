@@ -27,6 +27,7 @@ class BaseSequentialModel(nn.Module):
 
         # Assert label_dim is defined if model requires labels
         if self.requires_labels and 'label_dim' not in self.model_args:
+            # print("uhoh adding labels here")
             self.model_args.append('label_dim')
 
         # Check for missing arguments
@@ -83,7 +84,12 @@ class BaseSequentialModel(nn.Module):
 
         enc_fc_input = avg_hiddens
         if labels is not None:
+            # print("IN MODEL HERE")
+            # print(avg_hiddens.shape)
+            # print("BOOM")
             enc_fc_input = torch.cat([avg_hiddens, labels], 1)
+            # print(enc_fc_input.shape)
+            # print(self.enc_fc)
 
         enc_h = self.enc_fc(enc_fc_input) if hasattr(self, 'enc_fc') else enc_fc_input
         enc_mean = self.enc_mean(enc_h)
