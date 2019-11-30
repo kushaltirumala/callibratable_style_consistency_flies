@@ -1,0 +1,62 @@
+{
+    "start_time": "2019-11-30T05-48-51",
+    "experiment_name": "fruit_fly_configs",
+    "device": "cpu",
+    "summaries": {
+        "ctvae": {
+            "training": [
+                {
+                    "stage": 1,
+                    "num_epochs": 30,
+                    "stage_time": 2076.743,
+                    "best_test_log_times": [
+                        1,
+                        2,
+                        3,
+                        4,
+                        5,
+                        6,
+                        7,
+                        8,
+                        9,
+                        10,
+                        11,
+                        13,
+                        15,
+                        18,
+                        21,
+                        22,
+                        24,
+                        28
+                    ],
+                    "best_test_log": {
+                        "losses": {
+                            "kl_div": 4.961629494800671,
+                            "nll": -283.8788211017363
+                        },
+                        "metrics": {
+                            "kl_div_true": 4.949278996066737
+                        }
+                    }
+                }
+            ],
+            "dataset": {
+                "name": "fruit_fly",
+                "label_functions": {}
+            },
+            "model": {
+                "name": "ctvae",
+                "z_dim": 4,
+                "h_dim": 128,
+                "rnn_dim": 128,
+                "num_layers": 1,
+                "state_dim": 2,
+                "action_dim": 2,
+                "label_dim": 2,
+                "num_parameters": 239628
+            },
+            "total_time": 2076.785,
+            "log_path": "saved/fruit_fly_configs/ctvae/log.json"
+        }
+    }
+}
