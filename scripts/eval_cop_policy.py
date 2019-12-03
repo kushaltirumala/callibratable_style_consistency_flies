@@ -156,4 +156,4 @@ if __name__ == '__main__':
     # Check self consistency
     for trial_id in master['summaries']:
         visualize_samples_ctvae(exp_dir, trial_id, args.num_samples, args.num_values, args.repeat_index, args.burn_in,
-                                args.temperature, bad_experiment=True)
+                                args.temperature, bad_experiment=False)
