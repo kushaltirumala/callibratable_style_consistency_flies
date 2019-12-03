@@ -5,9 +5,10 @@ import numpy as np
 import torch
 import torch.nn.functional as F
 from torch.utils.data import DataLoader
-
+from keras.models import load_model
 
 import sys
+
 sys.path.append(sys.path[0] + '/..')
 
 from lib.models import get_model_class
@@ -15,37 +16,111 @@ from util.datasets import load_dataset
 from util.environments import load_environment, generate_rollout
 
 import matplotlib
+
 matplotlib.use('agg')
 import matplotlib.pyplot as plt
 
 def get_classification_loss(rollout_states, rollout_actions):
-    pass
+    model = load_model('classifier.h5')
+    return model.predict(rollout_states)
 
-# model_loc: location of trained policy file
-# length: length of sampled trajectories
-# trials: number of rollouts
-# config_file: location of config file (I believe it's in configs/fruit_fly_configs)
-def compute_stylecon(model_loc, length, trials, config_file):
-    state_dict = torch.load(model_loc, map_location=lambda storage, loc: storage)
-    with open(config_file) as f:
+def visualize_samples_ctvae(exp_dir, trial_id, num_samples, num_values, repeat_index, burn_in, temperature):
+    print('#################### Trial {} ####################'.format(trial_id))
+
+    # Get trial folder
+    trial_dir = os.path.join(exp_dir, trial_id)
+    assert os.path.isfile(os.path.join(trial_dir, 'summary.json'))
+
+    # Load config
+    with open(os.path.join(exp_dir, 'configs', '{}.json'.format(trial_id)), 'r') as f:
         config = json.load(f)
-    model_config = config['model_config']
     data_config = config['data_config']
+    model_config = config['model_config']
+
+    # Load dataset
+    dataset = load_dataset(data_config)
+    dataset.eval()
+
+    # Load best model
+    state_dict = torch.load(os.path.join(trial_dir, 'best.pth'), map_location=lambda storage, loc: storage)
     model_class = get_model_class(model_config['name'].lower())
+    assert model_class.requires_labels
+    model_config['label_functions'] = dataset.active_label_functions
     model = model_class(model_config)
     model.filter_and_load_state_dict(state_dict)
-    env = load_environment(data_config['name'])
+
+    # Load environment
+    env = load_environment(data_config['name'])  # TODO make env_config?
+
+    loader = DataLoader(dataset, batch_size=num_samples, shuffle=False)
+    (states, actions, labels_dict) = next(iter(loader))
+
+    if repeat_index >= 0:
+        states_single = states[repeat_index].unsqueeze(0)
+        states = states_single.repeat(num_samples, 1, 1)
+
+        actions_single = actions[repeat_index].unsqueeze(0)
+        actions = actions_single.repeat(num_samples, 1, 1)
+
+    states = states.transpose(0, 1)
+    actions = actions.transpose(0, 1)
+
     losses = []
-    for i in range(trials):
-        with torch.no_grad():
-            env.reset()
-            model.reset_policy()
-            rollout_states, rollout_actions = generate_rollout(env, model, horizon=length)
-            rollout_states = rollout_states.transpose(0,1)
-            rollout_actions = rollout_actions.transpose(0,1)
+    y = labels_dict["copulation"]
+    with torch.no_grad():
+        for k in range(3):
+            env.reset(init_state=states[0].clone())
+            model.reset_policy(labels=y, temperature=args.temperature)
+
+            rollout_states, rollout_actions = generate_rollout(env, model, burn_in=args.burn_in,
+                                                               burn_in_actions=actions, horizon=actions.size(0))
+            rollout_states = rollout_states.transpose(0, 1)
+            rollout_actions = rollout_actions.transpose(0, 1)
             losses.append(get_classification_loss(rollout_states, rollout_actions))
+
     print(np.mean(losses))
-    return np.mean(losses)
 
 
-compute_stylecon("saved_experiments/saved_preliminary_copulation_ctvae/fruit_fly_configs/ctvae/best.pth", 100, 3, "saved_experiments/saved_preliminary_copulation_ctvae/fruit_fly_configs/configs/ctvae.json")
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-f', '--exp_folder', type=str,
+                        required=True, default=None,
+                        help='folder of experiments from which to load models')
+    parser.add_argument('--save_dir', type=str,
+                        required=False, default='saved',
+                        help='save directory for experiments from project directory')
+    parser.add_argument('-n', '--num_samples', type=int,
+                        required=False, default=8,
+                        help='number of samples to generate FOR EACH CLASS')
+    parser.add_argument('-v', '--num_values', type=int,
+                        required=False, default=3,
+                        help='number of values to evaluate for continuous LFs')
+    parser.add_argument('-r', '--repeat_index', type=int,
+                        required=False, default=-1,
+                        help='repeated sampling with same burn-in')
+    parser.add_argument('-b', '--burn_in', type=int,
+                        required=False, default=0,
+                        help='burn in period, for sequential data')
+    parser.add_argument('-t', '--temperature', type=float,
+                        required=False, default=1.0,
+                        help='sampling temperature')
+    args = parser.parse_args()
+
+    # Get exp_directory
+    exp_dir = os.path.join(os.getcwd(), args.save_dir, args.exp_folder)
+
+    # Load master file
+    print(os.path.join(exp_dir, 'master.json'))
+    assert os.path.isfile(os.path.join(exp_dir, 'master.json'))
+    with open(os.path.join(exp_dir, 'master.json'), 'r') as f:
+        master = json.load(f)
+
+    assert args.repeat_index < args.num_samples
+    if args.repeat_index >= 0:
+        assert args.burn_in > 0
+
+    # Check self consistency
+    for trial_id in master['summaries']:
+        visualize_samples_ctvae(exp_dir, trial_id, args.num_samples, args.num_values, args.repeat_index, args.burn_in,
+                                args.temperature)
