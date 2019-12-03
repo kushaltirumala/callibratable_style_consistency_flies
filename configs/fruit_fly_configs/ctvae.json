@@ -7,6 +7,7 @@
         },
         "subsample": 2,
         "single_agent": true,
+        "discard_env_agent": true,
         "labels": [],
         "label_dim": 2
     },

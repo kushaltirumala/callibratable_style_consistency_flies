@@ -23,8 +23,8 @@ COORDS = {
 }
 
 # TODO let users define where data lies
-ROOT_DIR = 'transforming_data/compressed_final_data/'
-# ROOT_DIR = '/cs/courses/cs101a/segmented_fruit_fly_data/'
+# ROOT_DIR = 'transforming_data/compressed_final_data/'
+ROOT_DIR = '/cs/courses/cs101a/segmented_fruit_fly_data/'
 TRAIN_FILE = 'copulation_segmented_train.npz'
 TEST_FILE = 'copulation_segmented_test.npz'
 TRAIN_LABELS = 'copulation_segmented_train_label.npz'
@@ -60,6 +60,8 @@ class FruitFlyDataset(TrajectoryDataset):
             self.single_agent = self.config['single_agent']
         if 'player_types' in self.config:
             self.player_types = self.config['player_types']
+        if 'discard_env_agent' in self.config:
+            self.discard_env_agent = self.config['discard_env_agent']
 
         # TODO hacky solution
         if 'labels' in self.config:
@@ -99,7 +101,13 @@ class FruitFlyDataset(TrajectoryDataset):
             data = normalize(data)
 
         # Convert to single-agent data
-        if self.single_agent:
+        if self.discard_env_agent:
+            # if we want to run single agent learning with discarding one fly
+            data = data[:, :, :2]
+            print(data.shape)
+            labels = labels[:, :1]
+            print(labels.shape)
+        elif self.single_agent:
             seq_len = data.shape[1]
             data = np.swapaxes(data, 0, 1)
             data = np.reshape(data, (seq_len, -1, 2))
