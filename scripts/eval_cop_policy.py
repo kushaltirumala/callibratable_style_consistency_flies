@@ -6,6 +6,7 @@ import torch
 import torch.nn.functional as F
 from torch.utils.data import DataLoader
 from keras.models import load_model
+import tensorflow as tf
 
 import sys
 
@@ -22,9 +23,10 @@ import matplotlib.pyplot as plt
 
 def get_classification_loss(rollout_states, rollout_actions):
     model = load_model('classifier.h5')
-    return model.predict(rollout_states)
+    temp = rollout_states.numpy()
+    return model.predict(temp)
 
-def visualize_samples_ctvae(exp_dir, trial_id, num_samples, num_values, repeat_index, burn_in, temperature):
+def visualize_samples_ctvae(exp_dir, trial_id, num_samples, num_values, repeat_index, burn_in, temperature, bad_experiment=True):
     print('#################### Trial {} ####################'.format(trial_id))
 
     # Get trial folder
@@ -76,7 +78,38 @@ def visualize_samples_ctvae(exp_dir, trial_id, num_samples, num_values, repeat_i
                                                                burn_in_actions=actions, horizon=actions.size(0))
             rollout_states = rollout_states.transpose(0, 1)
             rollout_actions = rollout_actions.transpose(0, 1)
-            losses.append(get_classification_loss(rollout_states, rollout_actions))
+
+
+            # if we have a single agent setting, we generate two rollouts and vert stack them
+            if bad_experiment:
+                rollout_states_2, rollout_actions_2 = generate_rollout(env, model, burn_in=args.burn_in,
+                                                                   burn_in_actions=actions, horizon=actions.size(0))
+                rollout_states_2 = rollout_states_2.transpose(0, 1)
+                rollout_actions_2 = rollout_actions_2.transpose(0, 1)
+
+                stack_tensor_states = torch.cat((rollout_states, rollout_states_2), dim=2)
+                stack_tensor_action = torch.cat((rollout_actions, rollout_actions_2), dim=2)
+
+                rollout_states_3, rollout_actions_3 = generate_rollout(env, model, burn_in=args.burn_in,
+                                                                   burn_in_actions=actions, horizon=actions.size(0))
+                rollout_states_3 = rollout_states_3.transpose(0, 1)
+                rollout_actions_3 = rollout_actions_3.transpose(0, 1)
+
+                rollout_states_4, rollout_actions_4 = generate_rollout(env, model, burn_in=args.burn_in,
+                                                                   burn_in_actions=actions, horizon=actions.size(0))
+                rollout_states_4 = rollout_states_4.transpose(0, 1)
+                rollout_actions_4 = rollout_actions_4.transpose(0, 1)
+
+                stack_tensor_states_2 = torch.cat((rollout_states_3, rollout_states_4), dim=2)
+                stack_tensor_action_2 = torch.cat((rollout_actions_3, rollout_actions_4), dim=2)
+
+                final_states_tensor = torch.cat((stack_tensor_states, stack_tensor_states_2), dim=1)
+                final_actions_tensor = torch.cat((stack_tensor_action, stack_tensor_action_2), dim=1)
+
+                losses.append(get_classification_loss(final_states_tensor, final_actions_tensor))
+
+            else:
+                losses.append(get_classification_loss(rollout_states, rollout_actions))
 
     print(np.mean(losses))
 
@@ -123,4 +156,4 @@ if __name__ == '__main__':
     # Check self consistency
     for trial_id in master['summaries']:
         visualize_samples_ctvae(exp_dir, trial_id, args.num_samples, args.num_values, args.repeat_index, args.burn_in,
-                                args.temperature)
+                                args.temperature, bad_experiment=True)

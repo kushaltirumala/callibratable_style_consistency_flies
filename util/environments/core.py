@@ -23,8 +23,6 @@ def generate_rollout(env, model, burn_in=0, burn_in_actions=None, horizon=0):
 
     state = env.get_obs() # should be reset?
 
-    print(type(state))
-
     states = [state.clone().unsqueeze(0)]
     actions = []
 
