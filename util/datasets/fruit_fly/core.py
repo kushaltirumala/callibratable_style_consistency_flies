@@ -135,63 +135,91 @@ class FruitFlyDataset(TrajectoryDataset):
         states = states.detach().numpy()
         if self.normalize_data:
             states = unnormalize(states)
+        #
+        # if single_plot:
+        #     states = np.swapaxes(states, 0, 1)
+        #     states = np.reshape(states, (states.shape[0], 1, -1))
+        #     states = np.swapaxes(states, 0, 1)
 
-        if single_plot:
-            states = np.swapaxes(states, 0, 1)
-            states = np.reshape(states, (states.shape[0], 1, -1))
-            states = np.swapaxes(states, 0, 1)
-
-        n_players = int(states.shape[-1]/2)
+        # n_players = int(states.shape[-1]/2)
         # colormap = ['b'] * n_players
-        colormap = ['b'] * n_players
+        # colormap = ['b'] * n_players
         # colormap = ['b', 'g', 'r', 'm', 'y'] # TODO colormap for more players
 
-        for i in range(len(states)):
-            seq = SCALE*states[i]
+        # for i in range(len(states)):
+        #     seq = SCALE*states[i]
+        #
+        #     fig, ax = _set_figax()
+        #
+            # for k in range(n_players):
+            #     x = seq[:,(2*k)]
+            #     y = seq[:,(2*k+1)]
+            #     c = colormap[k]
+            #
+            #     # if not single_plot:
+            #     # ax.plot(x, y, 'o', color=c, markersize=(4 if single_plot else 8), alpha=0.5)
+            #     ax.plot(x, y, 'o', color=c, markersize=5, alpha=0.5)
+            #     ax.plot(x, y, color=c, linewidth=5, alpha=0.7) # DEFAULT lw=3, a=0.7
+            #     ax.plot(x, y, color='k', linewidth=1, alpha=0.7) # DEFAULT lw=3, a=0.7
+            #
+            # # Starting positions
+            # x = seq[0,::2]
+            # y = seq[0,1::2]
+            # ax.plot(x, y, 'd', color='black', markersize=16) # DEFAULT 'O', 10
+            #
+            # # Final positions
+            # x = seq[-1,::2]
+            # y = seq[-1,1::2]
+            # ax.plot(x, y, 'o', color='black', markersize=8)
+        #
+        #     # Burn-ins
+        #     if burn_in > 0:
+        #         x = seq[:burn_in,0] if single_plot else seq[:burn_in,::2]
+        #         y = seq[:burn_in,1] if single_plot else seq[:burn_in,1::2]
+        #
+        #         ax.plot(x, y, color='black', linewidth=8, alpha=0.5)
+        #
+        #     # (Optional) Label function plotting
+        #     for lf in lf_list:
+        #         label = labels[i].numpy()
+        #         ax = lf.plot(ax, seq, label, width=WIDTH*SCALE, length=LENGTH*SCALE)
+        #     print(states)
+            # states is 8 long, each one is size 50
+            n_players = 1
+            for i in range(len(states)):
+                # fig, ax = _set_figax()
+                seq = states[i]
+                for k in range(n_players):
+                    x = seq[:, (2 * k)]
+                    y = seq[:, (2 * k + 1)]
+                    # c = colormap[k]
 
-            fig, ax = _set_figax()
+                    # if not single_plot:
+                    # ax.plot(x, y, 'o', color=c, markersize=(4 if single_plot else 8), alpha=0.5)
+                    plt.plot(x, y, 'o', color='r', markersize=5, alpha=0.5)
+                    # ax.plot(x, y, color=c, linewidth=5, alpha=0.7)  # DEFAULT lw=3, a=0.7
+                    # ax.plot(x, y, color='k', linewidth=1, alpha=0.7)  # DEFAULT lw=3, a=0.7
+                    print(x)
+                    print(y)
+                # Starting positions
+                x = seq[0, 0]
+                y = seq[0, 1]
+                plt.plot(x, y, 'd', color='black', markersize=8)  # DEFAULT 'O', 10
 
-            for k in range(n_players):
-                x = seq[:,(2*k)]
-                y = seq[:,(2*k+1)]
-                c = colormap[k]
+                # Final positions
+                x = seq[-1, 0]
+                y = seq[-1, 1]
+                plt.plot(x, y, 'o', color='black', markersize=8)
 
-                # if not single_plot:
-                # ax.plot(x, y, 'o', color=c, markersize=(4 if single_plot else 8), alpha=0.5)
-                ax.plot(x, y, 'o', color=c, markersize=5, alpha=0.5)
-                ax.plot(x, y, color=c, linewidth=5, alpha=0.7) # DEFAULT lw=3, a=0.7
-                ax.plot(x, y, color='k', linewidth=1, alpha=0.7) # DEFAULT lw=3, a=0.7
 
-            # Starting positions
-            x = seq[0,::2]
-            y = seq[0,1::2]
-            ax.plot(x, y, 'd', color='black', markersize=16) # DEFAULT 'O', 10
+                plt.tight_layout(pad=0)
 
-            # Final positions
-            x = seq[-1,::2]
-            y = seq[-1,1::2]
-            ax.plot(x, y, 'o', color='black', markersize=8)
-        
-            # Burn-ins
-            if burn_in > 0:
-                x = seq[:burn_in,0] if single_plot else seq[:burn_in,::2]
-                y = seq[:burn_in,1] if single_plot else seq[:burn_in,1::2]
+                if len(save_name) == 0:
+                    plt.savefig(os.path.join(save_path, '{:03d}.png'.format(i)))
+                else:
+                    plt.savefig(os.path.join(save_path, '{}.png'.format(save_name)))
 
-                ax.plot(x, y, color='black', linewidth=8, alpha=0.5)
-
-            # (Optional) Label function plotting
-            for lf in lf_list:
-                label = labels[i].numpy()
-                ax = lf.plot(ax, seq, label, width=WIDTH*SCALE, length=LENGTH*SCALE)
-
-            plt.tight_layout(pad=0)
-
-            if len(save_name) == 0:
-                plt.savefig(os.path.join(save_path, '{:03d}.png'.format(i)))
-            else:
-                plt.savefig(os.path.join(save_path, '{}.png'.format(save_name)))
-
-            plt.close()
+                plt.close()
 
 def normalize(data):
     """Scale by dimensions of court and mean-shift to center of left half-court."""
@@ -209,15 +237,15 @@ def unnormalize(data):
 
 def _set_figax():
     fig = plt.figure(figsize=(5,5))
-    img = plt.imread(os.path.join(ROOT_DIR, 'court.png'))
-    img = resize(img,(SCALE*WIDTH,SCALE*LENGTH,3))
+    # img = plt.imread(os.path.join(ROOT_DIR, 'court.png'))
+    # img = resize(img,(SCALE*WIDTH,SCALE*LENGTH,3))
 
     ax = fig.add_subplot(111)
-    ax.imshow(img)
+    # ax.imshow(img)
 
     # Show just the left half-court
-    ax.set_xlim([-50,550])
-    ax.set_ylim([-50,550])
+    ax.set_xlim([-500,550])
+    ax.set_ylim([-500,550])
     ax.get_xaxis().set_visible(False)
     ax.get_yaxis().set_visible(False)
 
