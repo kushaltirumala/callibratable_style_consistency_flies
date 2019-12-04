@@ -5,8 +5,8 @@
             "first_fly": true,
             "second_fly": true
         },
-        "single_agent": true,
-        "discard_env_agent": true,
+        "single_agent": false,
+        "discard_env_agent": false,
         "labels": [],
         "label_dim": 2
     },

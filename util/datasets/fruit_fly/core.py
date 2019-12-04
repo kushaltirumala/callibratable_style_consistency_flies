@@ -110,8 +110,6 @@ class FruitFlyDataset(TrajectoryDataset):
             # if we want to run single agent learning with discarding one fly
             data = data[:, :, 2:4]
             labels = labels[:, 1:]
-            print(data.shape)
-            print(labels.shape)
         elif self.single_agent:
             seq_len = data.shape[1]
             data = np.swapaxes(data, 0, 1)
@@ -138,6 +136,9 @@ class FruitFlyDataset(TrajectoryDataset):
             self.train_data = data
         else:
             self.test_data = data
+
+        print("HEREHERE")
+        print(states.shape)
 
         return torch.Tensor(states), torch.Tensor(actions), torch.Tensor(labels)
 

@@ -40,6 +40,10 @@ class TrajectoryDataset(Dataset):
             assert isinstance(data_config['subsample'], int) and data_config['subsample'] > 0
             self.subsample = data_config['subsample']
 
+        if 'single_agent' in data_config:
+            assert isinstance(data_config['single_agent'], bool)
+            self.single_agent = data_config['single_agent']
+
         self.config = data_config
         self.summary = {'name' : self.name}
 
@@ -103,29 +107,45 @@ class TrajectoryDataset(Dataset):
     def __getitem__(self, index):
         states = self.states[self.mode][index,:,:self.state_dim]
         actions = self.actions[self.mode][index,:,:self.action_dim]
-        # if not self.hasTrueLabels:
-        # labels_dict = { key: val[index] for key, val in self.lf_labels[self.mode].items() }
-        # print("HEHEHEHEH")
-        # print(labels_dict)
-        # print("HEHEHEHHE")
-        # else:
-        if self.mode == TRAIN:
-            temp = self.train_labels[index].item()
-            categorical_labels = [0, 0]
-            if (temp == 1):
-                categorical_labels[0] = 1
+
+        if self.single_agent:
+            if self.mode == TRAIN:
+                temp = self.train_labels[index].item()
+                # if either fly has copulating turned on, assume both are
+                categorical_labels = [0, 0]
+                if (temp == 1):
+                    categorical_labels[0] = 1
+                else:
+                    categorical_labels[1] = 1
+                labels_dict = {"copulation": torch.Tensor(categorical_labels)}
             else:
-                categorical_labels[1] = 1
-            labels_dict = {"copulation": torch.Tensor(categorical_labels)}
+                temp = self.test_labels[index].item()
+                categorical_labels = [0, 0]
+                if (temp == 1):
+                    categorical_labels[0] = 1
+                else:
+                    categorical_labels[1] = 1
+                labels_dict = {"copulation": torch.Tensor(categorical_labels)}
+            return states, actions, labels_dict
         else:
-            temp = self.test_labels[index].item()
-            categorical_labels = [0, 0]
-            if (temp == 1):
-                categorical_labels[0] = 1
+            if self.mode == TRAIN:
+                temp = self.train_labels[index]
+                # if either fly has copulating turned on, assume both are
+                categorical_labels = [0, 0]
+                if (temp[0] == 1 or temp[1] == 1):
+                    categorical_labels[0] = 1
+                else:
+                    categorical_labels[1] = 1
+                labels_dict = {"copulation": torch.Tensor(categorical_labels)}
             else:
-                categorical_labels[1] = 1
-            labels_dict = {"copulation": torch.Tensor(categorical_labels)}
-        return states, actions, labels_dict
+                temp = self.test_labels[index]
+                categorical_labels = [0, 0]
+                if (temp[0] == 1 or temp[1] == 1):
+                    categorical_labels[0] = 1
+                else:
+                    categorical_labels[1] = 1
+                labels_dict = {"copulation": torch.Tensor(categorical_labels)}
+            return states, actions, labels_dict
 
     @property
     def seq_len(self):
