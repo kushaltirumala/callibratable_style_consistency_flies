@@ -67,27 +67,7 @@ def visualize_samples_ctvae(exp_dir, trial_id, num_samples, num_values, repeat_i
     states = states.transpose(0, 1)
     actions = actions.transpose(0, 1)
 
-        # if lf.categorical:
-        #     label_values = np.arange(0, lf.output_dim)
-        # else:
-        #     range_lower = torch.min(dataset.lf_labels[lf.name])
-        #     range_upper = torch.max(dataset.lf_labels[lf.name])
-        #
-        #     label_values = np.linspace(range_lower, range_upper, num_values + 2)
-        #     label_values = np.around(label_values, decimals=1)
-        #     label_values = label_values[1:-1]
-
-        # for c in label_values:
-        #     if lf.categorical:
-        #         y = torch.zeros(num_samples, lf.output_dim)
-        #         y[:, c] = 1
-        #     else:
-        #         y = c * torch.ones(num_samples, 1)
-
-            # Generate rollouts with labels
-    # print(labels_dict["copulation"])
     y = labels_dict["copulation"]
-    print(y)
     with torch.no_grad():
         env.reset(init_state=states[0].clone())
         model.reset_policy(labels=y, temperature=args.temperature)
@@ -97,63 +77,17 @@ def visualize_samples_ctvae(exp_dir, trial_id, num_samples, num_values, repeat_i
         rollout_states = rollout_states.transpose(0, 1)
         rollout_actions = rollout_actions.transpose(0, 1)
 
-        print("---SHAPE---")
-        print(rollout_states.shape)
 
-        # print(rollout_states)
-        # print(type(dataset))
         dataset.save(
             rollout_states,
             rollout_actions,
             labels=y,
             lf_list=dataset.active_label_functions,
             burn_in=burn_in,
-            # save_path=os.path.join(trial_dir, 'results', '{}_label_{}'.format(lf.name, c)),
-            # save_name='repeat_{:03d}'.format(repeat_index) if repeat_index >= 0 else '',
             save_path=os.path.join(trial_dir, 'results', "copulating"),
             save_name='repeat_{:03d}_{}'.format(repeat_index, "copulating") if repeat_index >= 0 else '',
             single_plot=(repeat_index >= 0))
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
-    parser.add_argument('-f', '--exp_folder', type=str,
-                        required=True, default=None,
-                        help='folder of experiments from which to load models')
-    parser.add_argument('--save_dir', type=str,
-                        required=False, default='saved',
-                        help='save directory for experiments from project directory')
-    parser.add_argument('-n', '--num_samples', type=int,
-                        required=False, default=8,
-                        help='number of samples to generate FOR EACH CLASS')
-    parser.add_argument('-v', '--num_values', type=int,
-                        required=False, default=3,
-                        help='number of values to evaluate for continuous LFs')
-    parser.add_argument('-r', '--repeat_index', type=int,
-                        required=False, default=-1,
-                        help='repeated sampling with same burn-in')
-    parser.add_argument('-b', '--burn_in', type=int,
-                        required=False, default=0,
-                        help='burn in period, for sequential data')
-    parser.add_argument('-t', '--temperature', type=float,
-                        required=False, default=1.0,
-                        help='sampling temperature')
-    args = parser.parse_args()
-
-    # Get exp_directory
-    exp_dir = os.path.join(os.getcwd(), args.save_dir, args.exp_folder)
-
-    # Load master file
-    print(exp_dir)
-    assert os.path.isfile(os.path.join(exp_dir, 'master.json'))
-    with open(os.path.join(exp_dir, 'master.json'), 'r') as f:
-        master = json.load(f)
-
-    assert args.repeat_index < args.num_samples
-    if args.repeat_index >= 0:
-        assert args.burn_in > 0
-
-    # Check self consistency
-    for trial_id in master['summaries']:
-        visualize_samples_ctvae(exp_dir, trial_id, args.num_samples, args.num_values, args.repeat_index, args.burn_in,
-                                args.temperature)
+    visualize_samples_ctvae("")

@@ -23,8 +23,8 @@ COORDS = {
 }
 
 # TODO let users define where data lies
-# ROOT_DIR = 'transforming_data/compressed_final_data/'
-ROOT_DIR = '/cs/courses/cs101a/segmented_fruit_fly_data/'
+ROOT_DIR = 'transforming_data/compressed_final_data/'
+# ROOT_DIR = '/cs/courses/cs101a/segmented_fruit_fly_data/'
 TRAIN_FILE = 'copulation_segmented_train.npz'
 TEST_FILE = 'copulation_segmented_test.npz'
 TRAIN_LABELS = 'copulation_segmented_train_label.npz'
@@ -199,7 +199,8 @@ class FruitFlyDataset(TrajectoryDataset):
         #         ax = lf.plot(ax, seq, label, width=WIDTH*SCALE, length=LENGTH*SCALE)
         #     print(states)
             # states is 8 long, each one is size 50
-            n_players = 1
+            n_players = 2
+            colors = ['r', 'b']
             for i in range(len(states)):
                 # fig, ax = _set_figax()
                 seq = states[i]
@@ -210,23 +211,33 @@ class FruitFlyDataset(TrajectoryDataset):
 
                     # if not single_plot:
                     # ax.plot(x, y, 'o', color=c, markersize=(4 if single_plot else 8), alpha=0.5)
-                    plt.plot(x, y, 'o', color='r', markersize=5, alpha=0.5)
+                    plt.plot(x, y, 'o', color=colors[k], markersize=5, alpha=0.5)
                     # ax.plot(x, y, color=c, linewidth=5, alpha=0.7)  # DEFAULT lw=3, a=0.7
                     # ax.plot(x, y, color='k', linewidth=1, alpha=0.7)  # DEFAULT lw=3, a=0.7
-                    print(x)
-                    print(y)
+
                 # Starting positions
-                x = seq[0, 0]
-                y = seq[0, 1]
-                plt.plot(x, y, 'd', color='black', markersize=8)  # DEFAULT 'O', 10
 
-                # Final positions
-                x = seq[-1, 0]
-                y = seq[-1, 1]
-                plt.plot(x, y, 'o', color='black', markersize=8)
+                for k in range(n_players):
+                    x = seq[0, (2*k)]
+                    y = seq[0, (2*k + 1)]
+                    plt.plot(x, y, 'd', color=colors[k], markersize=8)  # DEFAULT 'O', 10
+
+                    # Final positions
+                    x = seq[-1, (2*k)]
+                    y = seq[-1, (2*k + 1)]
+                    plt.plot(x, y, 'o', color=colors[k], markersize=8)
 
 
-                plt.tight_layout(pad=0)
+                # plt.tight_layout(pad=0)
+                plt_title = "copulation: "
+                if labels is not None:
+                    if labels[i][0] == 1:
+                        # this means copulation is occurring (i.e label is [1, 0] for trajectory
+                        plt_title += " true"
+                    else:
+                        plt_title += "false"
+
+                plt.title(plt_title)
 
                 if len(save_name) == 0:
                     plt.savefig(os.path.join(save_path, '{:03d}.png'.format(i)))
