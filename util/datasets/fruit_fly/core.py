@@ -91,11 +91,11 @@ class FruitFlyDataset(TrajectoryDataset):
 
 
         # Filter based on player types
-        inds_filter = []
-        for key, val in self.player_types.items():
-            inds_filter += COORDS[key] if val else []
-        # print(inds_filter)
-        data = data[:,:,inds_filter]
+        # inds_filter = []
+        # for key, val in self.player_types.items():
+        #     inds_filter += COORDS[key] if val else []
+        # # print(inds_filter)
+        # data = data[:,:,inds_filter]
 
         # print(data.shape)
 
@@ -108,8 +108,10 @@ class FruitFlyDataset(TrajectoryDataset):
         # Convert to single-agent data
         if self.discard_env_agent:
             # if we want to run single agent learning with discarding one fly
-            data = data[:, :, :2]
-            labels = labels[:, :1]
+            data = data[:, :, 2:4]
+            labels = labels[:, 1:]
+            print(data.shape)
+            print(labels.shape)
         elif self.single_agent:
             seq_len = data.shape[1]
             data = np.swapaxes(data, 0, 1)
