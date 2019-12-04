@@ -1,0 +1,67 @@
+{
+    "start_time": "2019-12-04T01-42-46",
+    "experiment_name": "fruit_fly_configs",
+    "device": "cpu",
+    "summaries": {
+        "ctvae": {
+            "training": [
+                {
+                    "stage": 1,
+                    "num_epochs": 30,
+                    "stage_time": 874.256,
+                    "best_test_log_times": [
+                        1,
+                        2,
+                        3,
+                        4,
+                        6,
+                        7,
+                        8,
+                        10,
+                        11,
+                        13,
+                        14,
+                        16,
+                        17,
+                        18,
+                        19,
+                        20,
+                        21,
+                        25,
+                        26,
+                        27,
+                        28,
+                        29,
+                        30
+                    ],
+                    "best_test_log": {
+                        "losses": {
+                            "kl_div": 4.977252641357862,
+                            "nll": -260.54881050811787
+                        },
+                        "metrics": {
+                            "kl_div_true": 4.977198597901712
+                        }
+                    }
+                }
+            ],
+            "dataset": {
+                "name": "fruit_fly",
+                "label_functions": {}
+            },
+            "model": {
+                "name": "ctvae",
+                "z_dim": 4,
+                "h_dim": 128,
+                "rnn_dim": 128,
+                "num_layers": 1,
+                "state_dim": 2,
+                "action_dim": 2,
+                "label_dim": 2,
+                "num_parameters": 239628
+            },
+            "total_time": 874.267,
+            "log_path": "saved/fruit_fly_configs/ctvae/log.json"
+        }
+    }
+}

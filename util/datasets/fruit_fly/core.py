@@ -23,8 +23,8 @@ COORDS = {
 }
 
 # TODO let users define where data lies
-# ROOT_DIR = 'transforming_data/compressed_final_data/'
-ROOT_DIR = '/cs/courses/cs101a/segmented_fruit_fly_data/'
+ROOT_DIR = 'transforming_data/compressed_final_data/'
+# ROOT_DIR = '/cs/courses/cs101a/segmented_fruit_fly_data/'
 TRAIN_FILE = 'copulation_segmented_train.npz'
 TEST_FILE = 'copulation_segmented_test.npz'
 TRAIN_LABELS = 'copulation_segmented_train_label.npz'
@@ -86,13 +86,18 @@ class FruitFlyDataset(TrajectoryDataset):
 
         # Subsample timesteps
         data = data[:,::self.subsample]
+        # print("HERE")
+        # print(data.shape)
 
 
         # Filter based on player types
         inds_filter = []
         for key, val in self.player_types.items():
             inds_filter += COORDS[key] if val else []
+        # print(inds_filter)
         data = data[:,:,inds_filter]
+
+        # print(data.shape)
 
 
 
@@ -104,9 +109,7 @@ class FruitFlyDataset(TrajectoryDataset):
         if self.discard_env_agent:
             # if we want to run single agent learning with discarding one fly
             data = data[:, :, :2]
-            print(data.shape)
             labels = labels[:, :1]
-            print(labels.shape)
         elif self.single_agent:
             seq_len = data.shape[1]
             data = np.swapaxes(data, 0, 1)
