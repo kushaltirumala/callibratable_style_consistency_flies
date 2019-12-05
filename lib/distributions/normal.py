@@ -23,6 +23,9 @@ class Normal(Distribution):
     def log_prob(self, value):
         pi = torch.FloatTensor([math.pi]).to(value.device)
         nll_element = (value - self.mean).pow(2) / torch.exp(self.logvar) + self.logvar + torch.log(2*pi)
+
+        # print("hello")
+        # print(nll_element)
         return -0.5 * torch.sum(nll_element)
 
     @staticmethod

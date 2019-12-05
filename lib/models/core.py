@@ -1,5 +1,6 @@
 import torch
 import torch.nn as nn
+import math
 
 from util.logging import LogEntry
 from lib.distributions import Normal
@@ -141,7 +142,13 @@ class BaseSequentialModel(nn.Module):
             dec_logvar = self.dec_action_logvar
         else:
             dec_logvar = self.dec_action_logvar(dec_h)
-
+        if "conditional_single_fly_policy_4_to_2" in self.config and self.config["conditional_single_fly_policy_4_to_2"]:
+            if self.config["policy_for_fly_1_4_to_2"]:
+                dec_mean[:, 2:4] = 0
+                dec_logvar[:, 2:4] = -1 * torch.log(torch.FloatTensor([2*math.pi]))
+            else:
+                dec_mean[:, 0:2] = 0
+                dec_logvar[:, 0:2] = -1 * torch.log(torch.FloatTensor([2*math.pi]))
         return Normal(dec_mean, dec_logvar)
 
     # TODO this goes to Policy level

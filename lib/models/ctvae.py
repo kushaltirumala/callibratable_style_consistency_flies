@@ -95,10 +95,13 @@ class CTVAE(BaseSequentialModel):
         for t in range(actions.size(0)):
             action_likelihood = self.decode_action(states[t])
             if "conditional_single_fly_policy_4_to_2" in self.config and self.config["conditional_single_fly_policy_4_to_2"]:
+                next_action = actions[t]
                 if self.config["policy_for_fly_1_4_to_2"]:
-                    self.log.losses['nll'] -= action_likelihood.log_prob(actions[t][:, 0:2])
+                    next_action[:, 2:4] = 0
+                    self.log.losses['nll'] -= action_likelihood.log_prob(next_action)
                 else:
-                    self.log.losses['nll'] -= action_likelihood.log_prob(actions[t][:, 2:4])
+                    next_action[:, 0:2] = 0
+                    self.log.losses['nll'] -= action_likelihood.log_prob(next_action)
             else:
                 self.log.losses['nll'] -= action_likelihood.log_prob(actions[t])
 
