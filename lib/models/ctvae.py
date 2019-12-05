@@ -32,7 +32,7 @@ class CTVAE(BaseSequentialModel):
         # TODO hacky, change this
         if 'mode' in self.config and self.config['mode'] == 'mujoco':
             assert not self.is_recurrent
-            
+
             self.enc_mean = nn.Linear(2*enc_rnn_dim+label_dim, z_dim)
             self.enc_logvar = nn.Linear(2*enc_rnn_dim+label_dim, z_dim)
 
@@ -72,7 +72,7 @@ class CTVAE(BaseSequentialModel):
 
     def forward(self, states, actions, labels_dict):
         self.log.reset()
-        
+
         assert actions.size(1)+1 == states.size(1) # final state has no corresponding action
         states = states.transpose(0,1)
         actions = actions.transpose(0,1)
@@ -94,8 +94,14 @@ class CTVAE(BaseSequentialModel):
 
         for t in range(actions.size(0)):
             action_likelihood = self.decode_action(states[t])
-            self.log.losses['nll'] -= action_likelihood.log_prob(actions[t])
-            
+            if "conditional_single_fly_policy_4_to_2" in self.config and self.config["conditional_single_fly_policy_4_to_2"]:
+                if self.config["policy_for_fly_1_4_to_2"]:
+                    self.log.losses['nll'] -= action_likelihood.log_prob(actions[t][:, 0:2])
+                else:
+                    self.log.losses['nll'] -= action_likelihood.log_prob(actions[t][:, 2:4])
+            else:
+                self.log.losses['nll'] -= action_likelihood.log_prob(actions[t])
+
             if self.is_recurrent:
                 self.update_hidden(states[t], actions[t])
 

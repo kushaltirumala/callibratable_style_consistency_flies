@@ -74,7 +74,7 @@ def visualize_samples_ctvae(exp_dir, trial_id, num_samples, num_values, repeat_i
             env.reset(init_state=states[0].clone())
             model.reset_policy(labels=y, temperature=args.temperature)
 
-            rollout_states, rollout_actions = generate_rollout(env, model, burn_in=args.burn_in,
+            rollout_states, rollout_actions = generate_rollout(env, model, model2=model, burn_in=args.burn_in,
                                                                burn_in_actions=actions, horizon=actions.size(0))
             rollout_states = rollout_states.transpose(0, 1)
             rollout_actions = rollout_actions.transpose(0, 1)
