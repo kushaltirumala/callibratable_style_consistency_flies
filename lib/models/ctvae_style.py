@@ -121,7 +121,7 @@ class CTVAE_style(BaseSequentialModel):
 
     def init_optimizer(self, lr):
         self.ctvaep_optimizer = torch.optim.Adam(self.ctvaep_params(), lr=lr)
-        self.label_approx_optimizer = torch.optim.Adam(self.label_approx_params(), lr=lr)
+        # self.label_approx_optimizer = torch.optim.Adam(self.label_approx_params(), lr=lr)
         self.dynamics_optimizer = torch.optim.Adam(self.dynamics_params(), lr=1e-3, weight_decay=1e-5)
 
     def optimize(self, losses):
@@ -134,13 +134,13 @@ class CTVAE_style(BaseSequentialModel):
             nn.utils.clip_grad_norm_(self.dynamics_params(), 10)
             self.dynamics_optimizer.step()
 
-        if self.stage == 2:
-            self.label_approx_optimizer.zero_grad()
-            label_preds = [ value for key,value in losses.items() if 'LF' in key ]
-            label_approx_loss = sum(label_preds)
-            label_approx_loss.backward(retain_graph=True)
-            nn.utils.clip_grad_norm_(self.label_approx_params(), 10)
-            self.label_approx_optimizer.step()
+        # if self.stage == 2:
+        #     self.label_approx_optimizer.zero_grad()
+        #     label_preds = [ value for key,value in losses.items() if 'LF' in key ]
+        #     label_approx_loss = sum(label_preds)
+        #     label_approx_loss.backward(retain_graph=True)
+        #     nn.utils.clip_grad_norm_(self.label_approx_params(), 10)
+        #     self.label_approx_optimizer.step()
 
         if self.stage >= 3:
             self.ctvaep_optimizer.zero_grad()

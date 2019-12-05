@@ -11,11 +11,14 @@
         "label_dim": 2
     },
     "model_config": {
-        "name": "ctvae",
+        "name": "ctvae_style",
         "z_dim": 4,
         "h_dim": 128,
         "rnn_dim": 128,
-        "num_layers": 1
+        "num_layers": 1,
+        "dynamics_h_dim": 128,
+        "H_step": 1,
+        "n_collect": 0
     },
     "train_config": {
         "batch_size": 128,
