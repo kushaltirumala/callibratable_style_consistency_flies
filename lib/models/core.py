@@ -34,10 +34,10 @@ class BaseSequentialModel(nn.Module):
         # Check for missing arguments
         missing_args = set(self.model_args) - set(model_config)
         assert len(missing_args) == 0, 'model_config is missing these arguments:\n\t{}'.format(', '.join(missing_args))
-        
+
         self.config = model_config
         self.log = LogEntry()
-        self.stage = 0 # some models have multi-stage training            
+        self.stage = 0 # some models have multi-stage training
 
         self._construct_model()
         self._define_losses()
@@ -87,7 +87,7 @@ class BaseSequentialModel(nn.Module):
         # print("---OG INPUT------")
         # print(enc_birnn_input)
         # print("-----------------")
-        
+
         hiddens, _ = self.enc_birnn(enc_birnn_input)
         # print("-----hiddens------")
         # print(hiddens)
@@ -142,13 +142,6 @@ class BaseSequentialModel(nn.Module):
             dec_logvar = self.dec_action_logvar
         else:
             dec_logvar = self.dec_action_logvar(dec_h)
-        if "conditional_single_fly_policy_4_to_2" in self.config and self.config["conditional_single_fly_policy_4_to_2"]:
-            if self.config["policy_for_fly_1_4_to_2"]:
-                dec_mean[:, 2:4] = 0
-                dec_logvar[:, 2:4] = -1 * torch.log(torch.FloatTensor([2*math.pi]))
-            else:
-                dec_mean[:, 0:2] = 0
-                dec_logvar[:, 0:2] = -1 * torch.log(torch.FloatTensor([2*math.pi]))
         return Normal(dec_mean, dec_logvar)
 
     # TODO this goes to Policy level
@@ -156,7 +149,7 @@ class BaseSequentialModel(nn.Module):
         if self.requires_labels:
             assert labels is not None
             assert labels.size(1) == self.config['label_dim']
-    
+
             if z is not None:
                 assert labels.size(0) == z.size(0)
 
@@ -169,7 +162,7 @@ class BaseSequentialModel(nn.Module):
             assert num_samples > 0
             assert device is not None
             z = torch.randn(num_samples, self.config['z_dim']).to(device)
-        
+
         self.z = z
         self.temperature = temperature
 

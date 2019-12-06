@@ -59,8 +59,12 @@ class CTVAE(BaseSequentialModel):
                 nn.ReLU(),
                 nn.Linear(h_dim, h_dim),
                 nn.ReLU())
-            self.dec_action_mean = nn.Linear(h_dim, action_dim)
-            self.dec_action_logvar = nn.Linear(h_dim, action_dim)
+            if "conditional_single_fly_policy_4_to_2" in self.config and self.config["conditional_single_fly_policy_4_to_2"]:
+                self.dec_action_mean = nn.Linear(h_dim, int(action_dim / 2))
+                self.dec_action_logvar = nn.Linear(h_dim, int(action_dim / 2))
+            else:
+                self.dec_action_mean = nn.Linear(h_dim, action_dim)
+                self.dec_action_logvar = nn.Linear(h_dim, action_dim)
 
         if self.is_recurrent:
             self.dec_rnn = nn.GRU(state_dim+action_dim, dec_rnn_dim, num_layers=num_layers)
@@ -93,15 +97,13 @@ class CTVAE(BaseSequentialModel):
 
 
         for t in range(actions.size(0)):
-            action_likelihood = self.decode_action(states[t])
             if "conditional_single_fly_policy_4_to_2" in self.config and self.config["conditional_single_fly_policy_4_to_2"]:
-                next_action = actions[t]
                 if self.config["policy_for_fly_1_4_to_2"]:
-                    next_action[:, 2:4] = 0
-                    self.log.losses['nll'] -= action_likelihood.log_prob(next_action)
+                    action_likelihood = self.decode_action(states[t])
+                    self.log.losses['nll'] -= action_likelihood.log_prob(actions[t, :, 0:2])
                 else:
-                    next_action[:, 0:2] = 0
-                    self.log.losses['nll'] -= action_likelihood.log_prob(next_action)
+                    action_likelihood = self.decode_action(torch.cat((states[t + 1, :, 0:2], states[t, :, 2:4]), dim=1))
+                    self.log.losses['nll'] -= action_likelihood.log_prob(actions[t, :, 2:4])
             else:
                 self.log.losses['nll'] -= action_likelihood.log_prob(actions[t])
 
