@@ -1,0 +1,752 @@
+[
+    {
+        "epoch": 1,
+        "stage": 1,
+        "train": {
+            "losses": {
+                "kl_div": 0.0,
+                "nll": 0.0,
+                "state_RMSE": 0.24237238743390696
+            },
+            "metrics": {
+                "kl_div_true": 0.0
+            }
+        },
+        "test": {
+            "losses": {
+                "kl_div": 0.0,
+                "nll": 0.0,
+                "state_RMSE": 0.04244166601872631
+            },
+            "metrics": {
+                "kl_div_true": 0.0
+            }
+        },
+        "time": 9.79129958152771
+    },
+    {
+        "epoch": 2,
+        "stage": 1,
+        "train": {
+            "losses": {
+                "kl_div": 0.0,
+                "nll": 0.0,
+                "state_RMSE": 0.02930040869561925
+            },
+            "metrics": {
+                "kl_div_true": 0.0
+            }
+        },
+        "test": {
+            "losses": {
+                "kl_div": 0.0,
+                "nll": 0.0,
+                "state_RMSE": 0.022492791684506817
+            },
+            "metrics": {
+                "kl_div_true": 0.0
+            }
+        },
+        "time": 9.985256671905518
+    },
+    {
+        "epoch": 3,
+        "stage": 1,
+        "train": {
+            "losses": {
+                "kl_div": 0.0,
+                "nll": 0.0,
+                "state_RMSE": 0.01467512346233433
+            },
+            "metrics": {
+                "kl_div_true": 0.0
+            }
+        },
+        "test": {
+            "losses": {
+                "kl_div": 0.0,
+                "nll": 0.0,
+                "state_RMSE": 0.009659980086053056
+            },
+            "metrics": {
+                "kl_div_true": 0.0
+            }
+        },
+        "time": 10.031334400177002
+    },
+    {
+        "epoch": 4,
+        "stage": 1,
+        "train": {
+            "losses": {
+                "kl_div": 0.0,
+                "nll": 0.0,
+                "state_RMSE": 0.011770672590438831
+            },
+            "metrics": {
+                "kl_div_true": 0.0
+            }
+        },
+        "test": {
+            "losses": {
+                "kl_div": 0.0,
+                "nll": 0.0,
+                "state_RMSE": 0.01025478931628862
+            },
+            "metrics": {
+                "kl_div_true": 0.0
+            }
+        },
+        "time": 10.287294864654541
+    },
+    {
+        "epoch": 5,
+        "stage": 1,
+        "train": {
+            "losses": {
+                "kl_div": 0.0,
+                "nll": 0.0,
+                "state_RMSE": 0.00788561080054646
+            },
+            "metrics": {
+                "kl_div_true": 0.0
+            }
+        },
+        "test": {
+            "losses": {
+                "kl_div": 0.0,
+                "nll": 0.0,
+                "state_RMSE": 0.006647917389941373
+            },
+            "metrics": {
+                "kl_div_true": 0.0
+            }
+        },
+        "time": 10.096468925476074
+    },
+    {
+        "epoch": 6,
+        "stage": 1,
+        "train": {
+            "losses": {
+                "kl_div": 0.0,
+                "nll": 0.0,
+                "state_RMSE": 0.007727706608427814
+            },
+            "metrics": {
+                "kl_div_true": 0.0
+            }
+        },
+        "test": {
+            "losses": {
+                "kl_div": 0.0,
+                "nll": 0.0,
+                "state_RMSE": 0.009057967421238636
+            },
+            "metrics": {
+                "kl_div_true": 0.0
+            }
+        },
+        "time": 10.038201093673706
+    },
+    {
+        "epoch": 7,
+        "stage": 1,
+        "train": {
+            "losses": {
+                "kl_div": 0.0,
+                "nll": 0.0,
+                "state_RMSE": 0.006310868828240924
+            },
+            "metrics": {
+                "kl_div_true": 0.0
+            }
+        },
+        "test": {
+            "losses": {
+                "kl_div": 0.0,
+                "nll": 0.0,
+                "state_RMSE": 0.004121265458687916
+            },
+            "metrics": {
+                "kl_div_true": 0.0
+            }
+        },
+        "time": 10.04443883895874
+    },
+    {
+        "epoch": 8,
+        "stage": 1,
+        "train": {
+            "losses": {
+                "kl_div": 0.0,
+                "nll": 0.0,
+                "state_RMSE": 0.005486012490846103
+            },
+            "metrics": {
+                "kl_div_true": 0.0
+            }
+        },
+        "test": {
+            "losses": {
+                "kl_div": 0.0,
+                "nll": 0.0,
+                "state_RMSE": 0.006738301955714544
+            },
+            "metrics": {
+                "kl_div_true": 0.0
+            }
+        },
+        "time": 10.060620069503784
+    },
+    {
+        "epoch": 9,
+        "stage": 1,
+        "train": {
+            "losses": {
+                "kl_div": 0.0,
+                "nll": 0.0,
+                "state_RMSE": 0.005082402210580418
+            },
+            "metrics": {
+                "kl_div_true": 0.0
+            }
+        },
+        "test": {
+            "losses": {
+                "kl_div": 0.0,
+                "nll": 0.0,
+                "state_RMSE": 0.013542528799048978
+            },
+            "metrics": {
+                "kl_div_true": 0.0
+            }
+        },
+        "time": 9.949165105819702
+    },
+    {
+        "epoch": 10,
+        "stage": 1,
+        "train": {
+            "losses": {
+                "kl_div": 0.0,
+                "nll": 0.0,
+                "state_RMSE": 0.011755518914882038
+            },
+            "metrics": {
+                "kl_div_true": 0.0
+            }
+        },
+        "test": {
+            "losses": {
+                "kl_div": 0.0,
+                "nll": 0.0,
+                "state_RMSE": 0.010020533170029117
+            },
+            "metrics": {
+                "kl_div_true": 0.0
+            }
+        },
+        "time": 10.29981279373169
+    },
+    {
+        "epoch": 11,
+        "stage": 1,
+        "train": {
+            "losses": {
+                "kl_div": 0.0,
+                "nll": 0.0,
+                "state_RMSE": 0.008020755866591324
+            },
+            "metrics": {
+                "kl_div_true": 0.0
+            }
+        },
+        "test": {
+            "losses": {
+                "kl_div": 0.0,
+                "nll": 0.0,
+                "state_RMSE": 0.004945828103904472
+            },
+            "metrics": {
+                "kl_div_true": 0.0
+            }
+        },
+        "time": 10.085602760314941
+    },
+    {
+        "epoch": 12,
+        "stage": 1,
+        "train": {
+            "losses": {
+                "kl_div": 0.0,
+                "nll": 0.0,
+                "state_RMSE": 0.007938325930464351
+            },
+            "metrics": {
+                "kl_div_true": 0.0
+            }
+        },
+        "test": {
+            "losses": {
+                "kl_div": 0.0,
+                "nll": 0.0,
+                "state_RMSE": 0.004124566097253787
+            },
+            "metrics": {
+                "kl_div_true": 0.0
+            }
+        },
+        "time": 9.915323972702026
+    },
+    {
+        "epoch": 13,
+        "stage": 1,
+        "train": {
+            "losses": {
+                "kl_div": 0.0,
+                "nll": 0.0,
+                "state_RMSE": 0.004795806200300169
+            },
+            "metrics": {
+                "kl_div_true": 0.0
+            }
+        },
+        "test": {
+            "losses": {
+                "kl_div": 0.0,
+                "nll": 0.0,
+                "state_RMSE": 0.0043321684119361605
+            },
+            "metrics": {
+                "kl_div_true": 0.0
+            }
+        },
+        "time": 10.081058979034424
+    },
+    {
+        "epoch": 14,
+        "stage": 1,
+        "train": {
+            "losses": {
+                "kl_div": 0.0,
+                "nll": 0.0,
+                "state_RMSE": 0.006226497050031705
+            },
+            "metrics": {
+                "kl_div_true": 0.0
+            }
+        },
+        "test": {
+            "losses": {
+                "kl_div": 0.0,
+                "nll": 0.0,
+                "state_RMSE": 0.007980986667984018
+            },
+            "metrics": {
+                "kl_div_true": 0.0
+            }
+        },
+        "time": 10.198310375213623
+    },
+    {
+        "epoch": 15,
+        "stage": 1,
+        "train": {
+            "losses": {
+                "kl_div": 0.0,
+                "nll": 0.0,
+                "state_RMSE": 0.005001557119303266
+            },
+            "metrics": {
+                "kl_div_true": 0.0
+            }
+        },
+        "test": {
+            "losses": {
+                "kl_div": 0.0,
+                "nll": 0.0,
+                "state_RMSE": 0.004469773556837746
+            },
+            "metrics": {
+                "kl_div_true": 0.0
+            }
+        },
+        "time": 10.447348356246948
+    },
+    {
+        "epoch": 16,
+        "stage": 1,
+        "train": {
+            "losses": {
+                "kl_div": 0.0,
+                "nll": 0.0,
+                "state_RMSE": 0.004529478967230114
+            },
+            "metrics": {
+                "kl_div_true": 0.0
+            }
+        },
+        "test": {
+            "losses": {
+                "kl_div": 0.0,
+                "nll": 0.0,
+                "state_RMSE": 0.005055472371238438
+            },
+            "metrics": {
+                "kl_div_true": 0.0
+            }
+        },
+        "time": 11.155022859573364
+    },
+    {
+        "epoch": 17,
+        "stage": 1,
+        "train": {
+            "losses": {
+                "kl_div": 0.0,
+                "nll": 0.0,
+                "state_RMSE": 0.004078506306625888
+            },
+            "metrics": {
+                "kl_div_true": 0.0
+            }
+        },
+        "test": {
+            "losses": {
+                "kl_div": 0.0,
+                "nll": 0.0,
+                "state_RMSE": 0.0030499356594418303
+            },
+            "metrics": {
+                "kl_div_true": 0.0
+            }
+        },
+        "time": 11.234678030014038
+    },
+    {
+        "epoch": 18,
+        "stage": 1,
+        "train": {
+            "losses": {
+                "kl_div": 0.0,
+                "nll": 0.0,
+                "state_RMSE": 0.003209195710174806
+            },
+            "metrics": {
+                "kl_div_true": 0.0
+            }
+        },
+        "test": {
+            "losses": {
+                "kl_div": 0.0,
+                "nll": 0.0,
+                "state_RMSE": 0.0018106772106810643
+            },
+            "metrics": {
+                "kl_div_true": 0.0
+            }
+        },
+        "time": 11.199159383773804
+    },
+    {
+        "epoch": 19,
+        "stage": 1,
+        "train": {
+            "losses": {
+                "kl_div": 0.0,
+                "nll": 0.0,
+                "state_RMSE": 0.005637290365201481
+            },
+            "metrics": {
+                "kl_div_true": 0.0
+            }
+        },
+        "test": {
+            "losses": {
+                "kl_div": 0.0,
+                "nll": 0.0,
+                "state_RMSE": 0.009863810014524018
+            },
+            "metrics": {
+                "kl_div_true": 0.0
+            }
+        },
+        "time": 11.179490804672241
+    },
+    {
+        "epoch": 20,
+        "stage": 1,
+        "train": {
+            "losses": {
+                "kl_div": 0.0,
+                "nll": 0.0,
+                "state_RMSE": 0.004665019127432407
+            },
+            "metrics": {
+                "kl_div_true": 0.0
+            }
+        },
+        "test": {
+            "losses": {
+                "kl_div": 0.0,
+                "nll": 0.0,
+                "state_RMSE": 0.0036423514477832448
+            },
+            "metrics": {
+                "kl_div_true": 0.0
+            }
+        },
+        "time": 11.150079011917114
+    },
+    {
+        "epoch": 21,
+        "stage": 1,
+        "train": {
+            "losses": {
+                "kl_div": 0.0,
+                "nll": 0.0,
+                "state_RMSE": 0.0034739090062384944
+            },
+            "metrics": {
+                "kl_div_true": 0.0
+            }
+        },
+        "test": {
+            "losses": {
+                "kl_div": 0.0,
+                "nll": 0.0,
+                "state_RMSE": 0.0034247476045295407
+            },
+            "metrics": {
+                "kl_div_true": 0.0
+            }
+        },
+        "time": 11.39745831489563
+    },
+    {
+        "epoch": 22,
+        "stage": 1,
+        "train": {
+            "losses": {
+                "kl_div": 0.0,
+                "nll": 0.0,
+                "state_RMSE": 0.003582046296169442
+            },
+            "metrics": {
+                "kl_div_true": 0.0
+            }
+        },
+        "test": {
+            "losses": {
+                "kl_div": 0.0,
+                "nll": 0.0,
+                "state_RMSE": 0.0029825351088432683
+            },
+            "metrics": {
+                "kl_div_true": 0.0
+            }
+        },
+        "time": 11.150980710983276
+    },
+    {
+        "epoch": 23,
+        "stage": 1,
+        "train": {
+            "losses": {
+                "kl_div": 0.0,
+                "nll": 0.0,
+                "state_RMSE": 0.002758242749391817
+            },
+            "metrics": {
+                "kl_div_true": 0.0
+            }
+        },
+        "test": {
+            "losses": {
+                "kl_div": 0.0,
+                "nll": 0.0,
+                "state_RMSE": 0.0032428041306591434
+            },
+            "metrics": {
+                "kl_div_true": 0.0
+            }
+        },
+        "time": 10.129070043563843
+    },
+    {
+        "epoch": 24,
+        "stage": 1,
+        "train": {
+            "losses": {
+                "kl_div": 0.0,
+                "nll": 0.0,
+                "state_RMSE": 0.0025132641398995423
+            },
+            "metrics": {
+                "kl_div_true": 0.0
+            }
+        },
+        "test": {
+            "losses": {
+                "kl_div": 0.0,
+                "nll": 0.0,
+                "state_RMSE": 0.0024548820698755878
+            },
+            "metrics": {
+                "kl_div_true": 0.0
+            }
+        },
+        "time": 10.036279678344727
+    },
+    {
+        "epoch": 25,
+        "stage": 1,
+        "train": {
+            "losses": {
+                "kl_div": 0.0,
+                "nll": 0.0,
+                "state_RMSE": 0.0024717147957379858
+            },
+            "metrics": {
+                "kl_div_true": 0.0
+            }
+        },
+        "test": {
+            "losses": {
+                "kl_div": 0.0,
+                "nll": 0.0,
+                "state_RMSE": 0.002965180479971243
+            },
+            "metrics": {
+                "kl_div_true": 0.0
+            }
+        },
+        "time": 10.068609476089478
+    },
+    {
+        "epoch": 26,
+        "stage": 1,
+        "train": {
+            "losses": {
+                "kl_div": 0.0,
+                "nll": 0.0,
+                "state_RMSE": 0.0038058576958525194
+            },
+            "metrics": {
+                "kl_div_true": 0.0
+            }
+        },
+        "test": {
+            "losses": {
+                "kl_div": 0.0,
+                "nll": 0.0,
+                "state_RMSE": 0.0018955293507441225
+            },
+            "metrics": {
+                "kl_div_true": 0.0
+            }
+        },
+        "time": 10.145188331604004
+    },
+    {
+        "epoch": 27,
+        "stage": 1,
+        "train": {
+            "losses": {
+                "kl_div": 0.0,
+                "nll": 0.0,
+                "state_RMSE": 0.0031117997984594753
+            },
+            "metrics": {
+                "kl_div_true": 0.0
+            }
+        },
+        "test": {
+            "losses": {
+                "kl_div": 0.0,
+                "nll": 0.0,
+                "state_RMSE": 0.0015280289027752535
+            },
+            "metrics": {
+                "kl_div_true": 0.0
+            }
+        },
+        "time": 10.237596035003662
+    },
+    {
+        "epoch": 28,
+        "stage": 1,
+        "train": {
+            "losses": {
+                "kl_div": 0.0,
+                "nll": 0.0,
+                "state_RMSE": 0.00213205991118938
+            },
+            "metrics": {
+                "kl_div_true": 0.0
+            }
+        },
+        "test": {
+            "losses": {
+                "kl_div": 0.0,
+                "nll": 0.0,
+                "state_RMSE": 0.009947414578835218
+            },
+            "metrics": {
+                "kl_div_true": 0.0
+            }
+        },
+        "time": 9.990934371948242
+    },
+    {
+        "epoch": 29,
+        "stage": 1,
+        "train": {
+            "losses": {
+                "kl_div": 0.0,
+                "nll": 0.0,
+                "state_RMSE": 0.0031275102961227375
+            },
+            "metrics": {
+                "kl_div_true": 0.0
+            }
+        },
+        "test": {
+            "losses": {
+                "kl_div": 0.0,
+                "nll": 0.0,
+                "state_RMSE": 0.001719811291703243
+            },
+            "metrics": {
+                "kl_div_true": 0.0
+            }
+        },
+        "time": 8.249744176864624
+    },
+    {
+        "epoch": 30,
+        "stage": 1,
+        "train": {
+            "losses": {
+                "kl_div": 0.0,
+                "nll": 0.0,
+                "state_RMSE": 0.002066780642567743
+            },
+            "metrics": {
+                "kl_div_true": 0.0
+            }
+        },
+        "test": {
+            "losses": {
+                "kl_div": 0.0,
+                "nll": 0.0,
+                "state_RMSE": 0.0017705065071116854
+            },
+            "metrics": {
+                "kl_div_true": 0.0
+            }
+        },
+        "time": 8.056961059570312
+    }
+]

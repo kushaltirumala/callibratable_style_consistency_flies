@@ -1,0 +1,66 @@
+{
+    "start_time": "2019-12-05T16-29-40",
+    "experiment_name": "fruit_fly_configs",
+    "device": "cpu",
+    "summaries": {
+        "ctvae": {
+            "training": [
+                {
+                    "stage": 1,
+                    "num_epochs": 30,
+                    "stage_time": 1881.476,
+                    "best_test_log_times": [
+                        1,
+                        2,
+                        3,
+                        4,
+                        5,
+                        6,
+                        7,
+                        8,
+                        12,
+                        13,
+                        14,
+                        17,
+                        18,
+                        19,
+                        21,
+                        22,
+                        23,
+                        24,
+                        25,
+                        26
+                    ],
+                    "best_test_log": {
+                        "losses": {
+                            "kl_div": 1.8271323620950466,
+                            "nll": -481.3309636669423
+                        },
+                        "metrics": {
+                            "kl_div_true": 1.75314156262185
+                        }
+                    }
+                }
+            ],
+            "dataset": {
+                "name": "fruit_fly",
+                "label_functions": {}
+            },
+            "model": {
+                "name": "ctvae",
+                "z_dim": 4,
+                "h_dim": 128,
+                "rnn_dim": 128,
+                "num_layers": 1,
+                "conditional_single_fly_policy_4_to_2": true,
+                "policy_for_fly_1_4_to_2": false,
+                "state_dim": 4,
+                "action_dim": 4,
+                "label_dim": 2,
+                "num_parameters": 245008
+            },
+            "total_time": 1881.555,
+            "log_path": "saved/fruit_fly_configs/ctvae/log.json"
+        }
+    }
+}
