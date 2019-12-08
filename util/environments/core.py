@@ -32,7 +32,7 @@ def generate_rollout(env, model, model2=None, burn_in=0, burn_in_actions=None, h
             if model.is_recurrent:
                 model.update_hidden(state, action)
         else:
-            action = model.act(state, action=actions[-1, 2:4])
+            action = model.act(state, action=actions)
             if model2:
                 action[:, 2:4] = 0
 
