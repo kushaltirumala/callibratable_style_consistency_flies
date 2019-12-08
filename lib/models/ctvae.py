@@ -133,7 +133,7 @@ class CTVAE(BaseSequentialModel):
                         action_likelihood = self.decode_action(torch.cat((states[t + 1, :, 0:2], states[t, :, 2:4]), dim=1), actions=torch.Tensor(np.zeros((actions.size(1), 2))))
                     else:
                         action_likelihood = self.decode_action(torch.cat((states[t + 1, :, 0:2], states[t, :, 2:4]), dim=1),
-                                                               actions=torch.cat((actions[t, :, 0:2], actions[t - 1, :, 2:4]), dim=1))
+                                                               actions=actions[t, :, 0:2])
                     self.log.losses['nll'] -= action_likelihood.log_prob(actions[t, :, 2:4])
             else:
                 self.log.losses['nll'] -= action_likelihood.log_prob(actions[t])
