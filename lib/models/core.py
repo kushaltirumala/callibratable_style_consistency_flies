@@ -135,11 +135,7 @@ class BaseSequentialModel(nn.Module):
         if self.is_recurrent:
             dec_fc_input = torch.cat([dec_fc_input, self.hidden[-1]], dim=1)
         if actions is not None:
-            print("HEYHEYHEY")
-            print(dec_fc_input.size())
             dec_fc_input = torch.cat([dec_fc_input, actions], dim=1)
-            print("HEYHEYHEY")
-            print(dec_fc_input.size())
 
         dec_h = self.dec_action_fc(dec_fc_input)
         dec_mean = self.dec_action_mean(dec_h)

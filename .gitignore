@@ -128,4 +128,4 @@ dmypy.json
 transforming_data/fruitflydata/*
 transforming_data/compressed_final_data/*
 
-*.pyc
+saved_experiments/*/fruit_fly_configs/ctvae/results
