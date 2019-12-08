@@ -32,7 +32,7 @@ def generate_rollout(env, model, model2=None, burn_in=0, burn_in_actions=None, h
             if model.is_recurrent:
                 model.update_hidden(state, action)
         else:
-            action = model.act(state)
+            action = model.act(state, action=actions[-1, 2:4])
             if model2:
                 action[:, 2:4] = 0
 
@@ -40,7 +40,7 @@ def generate_rollout(env, model, model2=None, burn_in=0, burn_in_actions=None, h
         assert not done
 
         if model2:
-            action = model2.act(state)
+            action = model2.act(state, action=actions[-1, 0:2])
             action[:, 0:2] = 0
 
             obs, reward, done, info = env.step(action)

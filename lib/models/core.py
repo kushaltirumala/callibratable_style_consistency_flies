@@ -128,12 +128,18 @@ class BaseSequentialModel(nn.Module):
         return Normal(enc_mean, enc_logvar)
 
     # TODO this should be in TVAEmodel
-    def decode_action(self, state):
+    def decode_action(self, state, actions=None):
         dec_fc_input = torch.cat([state, self.z], dim=1)
         if self.requires_labels:
             dec_fc_input = torch.cat([dec_fc_input, self.labels], dim=1)
         if self.is_recurrent:
             dec_fc_input = torch.cat([dec_fc_input, self.hidden[-1]], dim=1)
+        if actions is not None:
+            print("HEYHEYHEY")
+            print(dec_fc_input.size())
+            dec_fc_input = torch.cat([dec_fc_input, actions], dim=1)
+            print("HEYHEYHEY")
+            print(dec_fc_input.size())
 
         dec_h = self.dec_action_fc(dec_fc_input)
         dec_mean = self.dec_action_mean(dec_h)
@@ -170,8 +176,13 @@ class BaseSequentialModel(nn.Module):
             self.hidden = self.init_hidden_state(batch_size=z.size(0)).to(z.device)
 
     # TODO this goes to Policy level
-    def act(self, state, sample=True):
-        action_likelihood = self.decode_action(state)
+    def act(self, state, action=None, sample=True):
+        if "conditional_single_fly_policy_2_to_2" in self.config and self.config["conditional_single_fly_policy_2_to_2"]:
+            assert(action is not None)
+            action_likelihood = self.decode_action(state, actions=action)
+        else:
+            action_likelihood = self.decode_action(state)
+
         action = action_likelihood.sample(temperature=self.temperature) if sample else action_likelihood.mean
 
         if self.is_recurrent:
