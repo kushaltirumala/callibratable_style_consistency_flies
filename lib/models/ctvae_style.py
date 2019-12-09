@@ -272,10 +272,15 @@ class CTVAE_style(BaseSequentialModel):
             for lf_idx, lf_name in enumerate(labels_dict):
                 # lf = self.config['label_functions'][lf_idx]
                 lf_labels = labels_dict[lf_name]
+                print("before label loss")
                 self.log.losses[lf_name] = self.compute_label_loss(rollout_states, rollout_actions, lf_labels, lf_idx, True)
+                print("after label loss")
 
                 # Compute label loss with approx
+                print("before label")
                 approx_labels = self.label(rollout_states, rollout_actions, lf_idx, True)
+                print("after label")
+                print(approx_labels.shape)
                 assert approx_labels.size() == lf_labels.size()
                 self.log.metrics['{}_approx'.format(lf_name)] = torch.sum(approx_labels*lf_labels)
 
@@ -291,6 +296,7 @@ class CTVAE_style(BaseSequentialModel):
                 rollout_states_env, rollout_actions_env = self.generate_rollout_with_env(env, horizon=actions.size(0))
                 self.compute_dynamics_loss(rollout_states_env.to(labels.device), rollout_actions_env.to(labels.device))
 
+        print("done with one forward step")
         return self.log
   
     def generate_rollout_with_env(self, env, horizon):
