@@ -280,7 +280,7 @@ class CTVAE_style(BaseSequentialModel):
                 # print("before label")
                 approx_labels = self.label(rollout_states, rollout_actions, lf_idx, True)
                 # print("after label")
-                print(approx_labels.shape)
+                # print(approx_labels.shape)
                 assert approx_labels.size() == lf_labels.size()
                 self.log.metrics['{}_approx'.format(lf_name)] = torch.sum(approx_labels*lf_labels)
 
