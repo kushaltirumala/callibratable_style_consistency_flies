@@ -144,8 +144,8 @@ def start_training(save_path, data_config, model_config, train_config, device, t
             print('--- EPOCH [{}/{}] ---'.format(epochs_done, sum(train_config['num_epochs'])))
 
             epoch_start_time = time.time()
-            train_log = run_epoch(data_loader, model, device, env, train=True, early_break=test_code)
-            test_log = run_epoch(data_loader, model, device, env, train=False, early_break=test_code)
+            train_log = run_epoch(data_loader, model, device, env, train=True, early_break=test_code, portion=True)
+            test_log = run_epoch(data_loader, model, device, env, train=False, early_break=test_code, portion=True)
             epoch_time = time.time() - epoch_start_time
             print('{:.3f} seconds'.format(epoch_time))
         
