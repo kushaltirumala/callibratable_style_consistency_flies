@@ -1,0 +1,36 @@
+{
+    "data_config": {
+        "name": "fruit_fly",
+        "player_types": {
+            "first_fly": true,
+            "second_fly": true
+        },
+        "single_agent": false,
+        "discard_env_agent": false,
+        "labels": [],
+        "label_dim": 2
+    },
+    "model_config": {
+        "name": "ctvae",
+        "z_dim": 4,
+        "h_dim": 128,
+        "rnn_dim": 128,
+        "num_layers": 1,
+        "conditional_single_fly_policy_4_to_2": true,
+        "policy_for_fly_1_4_to_2": true,
+        "state_dim": 4,
+        "action_dim": 4,
+        "label_dim": 2,
+        "num_parameters": 244492
+    },
+    "train_config": {
+        "batch_size": 128,
+        "checkpoint_freq": 15,
+        "learning_rate": 0.0002,
+        "num_epochs": [
+            30
+        ],
+        "clip": 10,
+        "seed": 7861
+    }
+}
