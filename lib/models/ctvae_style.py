@@ -263,23 +263,23 @@ class CTVAE_style(BaseSequentialModel):
 
             # Generate rollout w/ dynamics model
             self.reset_policy(labels=labels)
-            print("before roll out states")
+            # print("before roll out states")
             rollout_states, rollout_actions = self.generate_rollout_with_dynamics(states, horizon=actions.size(0))
-            print("after rollout states")
+            # print("after rollout states")
 
 
             # Compute label loss
             for lf_idx, lf_name in enumerate(labels_dict):
                 # lf = self.config['label_functions'][lf_idx]
                 lf_labels = labels_dict[lf_name]
-                print("before label loss")
+                # print("before label loss")
                 self.log.losses[lf_name] = self.compute_label_loss(rollout_states, rollout_actions, lf_labels, lf_idx, True)
-                print("after label loss")
+                # print("after label loss")
 
                 # Compute label loss with approx
-                print("before label")
+                # print("before label")
                 approx_labels = self.label(rollout_states, rollout_actions, lf_idx, True)
-                print("after label")
+                # print("after label")
                 print(approx_labels.shape)
                 assert approx_labels.size() == lf_labels.size()
                 self.log.metrics['{}_approx'.format(lf_name)] = torch.sum(approx_labels*lf_labels)

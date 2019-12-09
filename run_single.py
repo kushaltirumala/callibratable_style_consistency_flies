@@ -45,6 +45,8 @@ if not os.path.exists(save_dir):
 print('Save directory:\t {}'.format(save_dir))
 
 # Get device ID
+print("HAHAHAHA")
+print(torch.cuda.is_available())
 if torch.cuda.is_available() and args.device >= 0:
     assert args.device < torch.cuda.device_count()
     device = 'cuda:{:d}'.format(args.device)
