@@ -136,6 +136,7 @@ class CTVAE(BaseSequentialModel):
                                                                actions=actions[t, :, 0:2])
                     self.log.losses['nll'] -= action_likelihood.log_prob(actions[t, :, 2:4])
             else:
+                action_likelihood = self.decode_action(states[t])
                 self.log.losses['nll'] -= action_likelihood.log_prob(actions[t])
 
             if self.is_recurrent:
