@@ -1,6 +1,8 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+import numpy as np
+from keras.models import load_model
 
 from lib.models.core import BaseSequentialModel
 from lib.distributions import Normal
@@ -135,6 +137,7 @@ class CTVAE_style(BaseSequentialModel):
             self.dynamics_optimizer.step()
 
         # if self.stage == 2:
+        #     print(type(self.label_approx_optimizer))
         #     self.label_approx_optimizer.zero_grad()
         #     label_preds = [ value for key,value in losses.items() if 'LF' in key ]
         #     label_approx_loss = sum(label_preds)
@@ -151,29 +154,45 @@ class CTVAE_style(BaseSequentialModel):
             self.ctvaep_optimizer.step()
 
     def label(self, states, actions, lf_idx, categorical):
-        assert states.size(0) == actions.size(0)
-        hiddens, _ = self.label_approx_birnn[lf_idx](torch.cat([states, actions], dim=-1))
-        avg_hiddens = torch.mean(hiddens, dim=0)
-        approx_out = self.label_approx_fc[lf_idx](avg_hiddens)
+        # assert states.size(0) == actions.size(0)
+        model = load_model("labelling_rnn_classifiers/classifier_0.h5")
+
+        # swap axes for states
+        states = states.transpose(0, 1)
+
+        approx_out = model.predict(states.detach().numpy())
+        approx_out = torch.Tensor(approx_out)
+
+        # hiddens, _ = self.label_approx_birnn[lf_idx](torch.cat([states, actions], dim=-1))
+        # avg_hiddens = torch.mean(hiddens, dim=0)
+        # approx_out = self.label_approx_fc[lf_idx](avg_hiddens)
 
         if categorical:
-            approx_out = F.log_softmax(approx_out, dim=-1)
-            label_class = torch.argmax(approx_out, dim=1)
-            approx_labels = torch.zeros(approx_out.size()).to(approx_out.device)
-            approx_labels[:,label_class] = 1.0
+            # approx_out = F.log_softmax(approx_out, dim=-1)
+            # label_class = torch.argmax(approx_out, dim=1)
+            # approx_labels = torch.zeros(approx_out.size()).to(approx_out.device)
+            # approx_labels[:,label_class] = 1.0
+            approx_labels = np.rint(approx_out)
             return approx_labels
         else:
             import pdb; pdb.set_trace()
 
     def compute_label_loss(self, states, actions, labels, lf_idx, categorical):
-        assert states.size(0) == actions.size(0)
-        hiddens, _ = self.label_approx_birnn[lf_idx](torch.cat([states, actions], dim=-1))
-        avg_hiddens = torch.mean(hiddens, dim=0)
-        approx_out = self.label_approx_fc[lf_idx](avg_hiddens)
-        assert approx_out.size() == labels.size()
+        # assert states.size(0) == actions.size(0)
+        # hiddens, _ = self.label_approx_birnn[lf_idx](torch.cat([states, actions], dim=-1))
+        # avg_hiddens = torch.mean(hiddens, dim=0)
+        # approx_out = self.label_approx_fc[lf_idx](avg_hiddens)
+
+        # swap axes for states
+        states = states.transpose(0, 1)
+        model = load_model("labelling_rnn_classifiers/classifier_0.h5")
+        approx_out = model.predict(states.detach().numpy())
+        # assert approx_out.size() == labels.size()
+        approx_out = torch.Tensor(approx_out)
 
         if categorical:
-            approx_out = F.log_softmax(approx_out, dim=-1)
+            approx_out = np.rint(approx_out)
+            # approx_out = F.log_softmax(approx_out, dim=-1)
             return -torch.sum(approx_out*labels)
         else:
             # TODO can make this a Dirac I think
@@ -188,22 +207,22 @@ class CTVAE_style(BaseSequentialModel):
             state_change = self.propogate_forward(states[t], actions[t])
             self.log.losses['state_RMSE'] += F.mse_loss(state_change, states[t+1]-states[t], reduction='sum')
                 
-        # assert actions.size(1) >= self.config['H_step'] # enough transitions for H_step loss
+        assert actions.size(1) >= self.config['H_step'] # enough transitions for H_step loss
 
-        # for t in range(states.size(0)-self.config['H_step']):
-        #     curr_state = states[t]
-        #     for h in range(self.config['H_step']):
-        #         state_change = self.propogate_forward(curr_state, actions[t+h])
-        #         curr_state += state_change
+        for t in range(states.size(0)-self.config['H_step']):
+            curr_state = states[t]
+            for h in range(self.config['H_step']):
+                state_change = self.propogate_forward(curr_state, actions[t+h])
+                curr_state += state_change
 
-        #         mse_elements = F.mse_loss(state_change, states[t+h+1]-states[t+h], reduction='none')
-        #         rmse = torch.sqrt(torch.sum(mse_elements, dim=1))
+                mse_elements = F.mse_loss(state_change, states[t+h+1]-states[t+h], reduction='none')
+                rmse = torch.sqrt(torch.sum(mse_elements, dim=1))
 
-        #         self.log.losses['state_RMSE'] += torch.sum(rmse)
+                self.log.losses['state_RMSE'] += torch.sum(rmse)
 
     def forward(self, states, actions, labels_dict, env):
         self.log.reset()
-        
+
         assert actions.size(1)+1 == states.size(1) # final state has no corresponding action
         states = states.transpose(0,1)
         actions = actions.transpose(0,1)
@@ -214,14 +233,15 @@ class CTVAE_style(BaseSequentialModel):
             self.compute_dynamics_loss(states, actions)
         
         # Pretrain label approximators
-        if self.stage == 2:
-            for lf_idx, lf_name in enumerate(labels_dict):
-                lf = self.config['label_functions'][lf_idx]
-                lf_labels = labels_dict[lf_name]
-                self.log.losses[lf_name] = self.compute_label_loss(states[:-1], actions, lf_labels, lf_idx, lf.categorical)
+        # if self.stage == 2:
+        #     for lf_idx, lf_name in enumerate(labels_dict):
+        #         lf = self.config['label_functions'][lf_idx]
+        #         lf_labels = labels_dict[lf_name]
+        #         self.log.losses[lf_name] = self.compute_label_loss(states[:-1], actions, lf_labels, lf_idx, lf.categorical)
 
         # Train CTVAE
-        elif self.stage >= 3:
+
+        elif self.stage >= 2:
             # Encode
             posterior = self.encode(states[:-1], actions=actions, labels=labels)
 
@@ -245,22 +265,23 @@ class CTVAE_style(BaseSequentialModel):
             self.reset_policy(labels=labels)
             rollout_states, rollout_actions = self.generate_rollout_with_dynamics(states, horizon=actions.size(0))
 
+
             # Compute label loss
             for lf_idx, lf_name in enumerate(labels_dict):
-                lf = self.config['label_functions'][lf_idx]
+                # lf = self.config['label_functions'][lf_idx]
                 lf_labels = labels_dict[lf_name]
-                self.log.losses[lf_name] = self.compute_label_loss(rollout_states[:-1], rollout_actions, lf_labels, lf_idx, lf.categorical)
-                
-                # Compute label loss with approx
-                approx_labels = self.label(rollout_states[:-1], rollout_actions, lf_idx, lf.categorical)
-                assert approx_labels.size() == lf_labels.size()
-                self.log.metrics['{}_approx'.format(lf.name)] = torch.sum(approx_labels*lf_labels)
+                self.log.losses[lf_name] = self.compute_label_loss(rollout_states, rollout_actions, lf_labels, lf_idx, True)
 
-                # Compute label loss with true LF    
-                rollout_lf_labels = lf.label(rollout_states.transpose(0,1).detach().cpu(),
-                    rollout_actions.transpose(0,1).detach().cpu(), batch=True)
-                assert rollout_lf_labels.size() == lf_labels.size()
-                self.log.metrics['{}_true'.format(lf.name)] = torch.sum(rollout_lf_labels*lf_labels.cpu())
+                # Compute label loss with approx
+                approx_labels = self.label(rollout_states, rollout_actions, lf_idx, True)
+                assert approx_labels.size() == lf_labels.size()
+                self.log.metrics['{}_approx'.format(lf_name)] = torch.sum(approx_labels*lf_labels)
+
+                # Compute label loss with true LF
+                # rollout_lf_labels = lf.label(rollout_states.transpose(0,1).detach().cpu(),
+                #     rollout_actions.transpose(0,1).detach().cpu(), batch=True)
+                # assert rollout_lf_labels.size() == lf_labels.size()
+                # self.log.metrics['{}_true'.format(lf.name)] = torch.sum(rollout_lf_labels*lf_labels.cpu())
 
             # Update dynamics model with n_collect rollouts from environment
             if self.config['n_collect'] > 0:
@@ -293,6 +314,7 @@ class CTVAE_style(BaseSequentialModel):
         rollout_states = [states[0].unsqueeze(0)]
         rollout_actions = []
 
+
         for t in range(horizon):
             curr_state = rollout_states[-1].squeeze(0)
             action = self.act(curr_state)
@@ -306,5 +328,7 @@ class CTVAE_style(BaseSequentialModel):
         rollout_states = torch.cat(rollout_states, dim=0)
         rollout_actions = torch.cat(rollout_actions, dim=0)
 
+        print("SHAPES")
+        print(rollout_states.shape)
         return rollout_states, rollout_actions
         

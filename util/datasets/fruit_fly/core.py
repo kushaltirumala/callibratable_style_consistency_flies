@@ -137,8 +137,8 @@ class FruitFlyDataset(TrajectoryDataset):
         else:
             self.test_data = data
 
-        print("HEREHERE")
-        print(states.shape)
+        # print("HEREHERE")
+        # print(states.shape)
 
         return torch.Tensor(states), torch.Tensor(actions), torch.Tensor(labels)
 
