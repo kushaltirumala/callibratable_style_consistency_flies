@@ -1,0 +1,67 @@
+{
+    "training": [
+        {
+            "stage": 1,
+            "num_epochs": 10,
+            "stage_time": 379.953,
+            "best_test_log_times": [
+                1,
+                2,
+                3,
+                6,
+                7,
+                8,
+                9
+            ],
+            "best_test_log": {
+                "losses": {
+                    "kl_div": 0.0,
+                    "nll": 0.0,
+                    "state_RMSE": 0.7105434254860205
+                },
+                "metrics": {
+                    "kl_div_true": 0.0
+                }
+            }
+        },
+        {
+            "stage": 2,
+            "num_epochs": 1,
+            "stage_time": 715.592,
+            "best_test_log_times": [
+                11
+            ],
+            "best_test_log": {
+                "losses": {
+                    "kl_div": 0.423331328923632,
+                    "nll": 156.54490190920023,
+                    "state_RMSE": 0.0,
+                    "copulation": -0.0
+                },
+                "metrics": {
+                    "kl_div_true": 0.005814167618823209,
+                    "copulation_approx": 0.0
+                }
+            }
+        }
+    ],
+    "dataset": {
+        "name": "fruit_fly",
+        "label_functions": {}
+    },
+    "model": {
+        "name": "ctvae_style",
+        "z_dim": 4,
+        "h_dim": 128,
+        "rnn_dim": 128,
+        "num_layers": 1,
+        "dynamics_h_dim": 128,
+        "H_step": 1,
+        "n_collect": 0,
+        "state_dim": 4,
+        "action_dim": 4,
+        "label_dim": 2,
+        "num_parameters": 263188
+    },
+    "total_time": 1095.836
+}
