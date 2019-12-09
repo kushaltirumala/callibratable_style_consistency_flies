@@ -24,6 +24,7 @@ def run_epoch(data_loader, model, device, env, train=True, early_break=False):
         data_loader.dataset.eval()
 
     for batch_idx, (states, actions, labels_dict) in enumerate(data_loader):
+        print("on batch index " + str(batch_idx))
         states = states.to(device)
         actions = actions.to(device)
         labels_dict = { key: value.to(device) for key, value in labels_dict.items() }
@@ -31,9 +32,7 @@ def run_epoch(data_loader, model, device, env, train=True, early_break=False):
         # TODO clean up this logic        
         if model.requires_labels:
             if model.requires_environment:
-                print("starting one forward step")
                 batch_log = model(states, actions, labels_dict, env)
-                print("end one forward step")
             else:
                 # print("hi")
                 # print(labels_dict)
