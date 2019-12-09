@@ -24,7 +24,7 @@ def run_epoch(data_loader, model, device, env, train=True, early_break=False, po
         data_loader.dataset.eval()
 
     for batch_idx, (states, actions, labels_dict) in enumerate(data_loader):
-        if (batch_idx % 1 == 0):
+        if (batch_idx % 10 == 0):
             print("on batch index " + str(batch_idx))
         states = states.to(device)
         actions = actions.to(device)
@@ -55,7 +55,7 @@ def run_epoch(data_loader, model, device, env, train=True, early_break=False, po
         if early_break:
             break
 
-        if portion:
+        if portion and model.stage >= 2:
             if batch_idx == 2:
                 break
             
