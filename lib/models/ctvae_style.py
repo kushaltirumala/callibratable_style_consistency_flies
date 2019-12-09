@@ -328,7 +328,5 @@ class CTVAE_style(BaseSequentialModel):
         rollout_states = torch.cat(rollout_states, dim=0)
         rollout_actions = torch.cat(rollout_actions, dim=0)
 
-        print("SHAPES")
-        print(rollout_states.shape)
         return rollout_states, rollout_actions
         

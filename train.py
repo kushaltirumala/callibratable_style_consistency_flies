@@ -129,8 +129,11 @@ def start_training(save_path, data_config, model_config, train_config, device, t
 
         best_test_log = {}
         best_test_log_times = []
+
+        print("starting here")
         
         for epoch in range(num_epochs):
+            print("starting another epoch")
             epochs_done += 1
             print('--- EPOCH [{}/{}] ---'.format(epochs_done, sum(train_config['num_epochs'])))
 
