@@ -263,7 +263,9 @@ class CTVAE_style(BaseSequentialModel):
 
             # Generate rollout w/ dynamics model
             self.reset_policy(labels=labels)
+            print("before roll out states")
             rollout_states, rollout_actions = self.generate_rollout_with_dynamics(states, horizon=actions.size(0))
+            print("after rollout states")
 
 
             # Compute label loss
@@ -327,6 +329,8 @@ class CTVAE_style(BaseSequentialModel):
 
         rollout_states = torch.cat(rollout_states, dim=0)
         rollout_actions = torch.cat(rollout_actions, dim=0)
+
+        print(rollout_states.shape)
 
         return rollout_states, rollout_actions
         
