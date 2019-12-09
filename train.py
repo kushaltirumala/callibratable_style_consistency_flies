@@ -56,7 +56,7 @@ def run_epoch(data_loader, model, device, env, train=True, early_break=False, po
             break
 
         if portion and model.stage >= 2:
-            if batch_idx == 2:
+            if batch_idx == 20:
                 break
             
     log.average(N=len(data_loader.dataset))
