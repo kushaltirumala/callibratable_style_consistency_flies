@@ -15,7 +15,9 @@
         "z_dim": 4,
         "h_dim": 128,
         "rnn_dim": 128,
-        "num_layers": 1
+        "num_layers": 1,
+        "conditional_single_fly_policy_2_to_2": true,
+        "policy_for_fly_1_2_to_2": true
     },
     "train_config": {
         "batch_size": 128,
