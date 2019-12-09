@@ -296,7 +296,7 @@ class CTVAE_style(BaseSequentialModel):
                 rollout_states_env, rollout_actions_env = self.generate_rollout_with_env(env, horizon=actions.size(0))
                 self.compute_dynamics_loss(rollout_states_env.to(labels.device), rollout_actions_env.to(labels.device))
 
-        print("done with one forward step")
+        # print("done with one forward step")
         return self.log
   
     def generate_rollout_with_env(self, env, horizon):
